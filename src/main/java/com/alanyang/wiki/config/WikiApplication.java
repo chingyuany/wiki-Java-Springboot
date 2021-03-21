@@ -1,4 +1,4 @@
-package com.alanyang.wiki;
+package com.alanyang.wiki.config;
 
 
 import org.slf4j.Logger;
@@ -7,12 +7,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
-import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.annotation.EnableScheduling;
-
 
 
 @SpringBootApplication
+@ComponentScan("com.alanyang")
 public class WikiApplication {
     private static final Logger LOG = LoggerFactory.getLogger(WikiApplication.class);
     public static void main(String[] args) {
