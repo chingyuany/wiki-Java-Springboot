@@ -1,5 +1,4 @@
-#
-电子书表
+#电子书表
 drop table if exists `ebook`;
 create table `ebook`
 (
@@ -38,8 +37,7 @@ create table `test`
 insert into `test` (id, name, password)
 values (1, '测试', 'password');
 
-#
-分类
+#分类
 drop table if exists `category`;
 create table `category`
 (
