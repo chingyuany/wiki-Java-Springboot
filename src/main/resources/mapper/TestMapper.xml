@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--要和src>java>mapper對應-->
+<mapper namespace="com.alanyang.wiki.mapper.TestMapper" >
+<!--    id 是方法名-->
+    <select id="list" resultType="com.alanyang.wiki.domain.Test">
+        select `id`, `name`, `password` from `test`
+    </select>
+
+</mapper>
