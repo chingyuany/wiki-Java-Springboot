@@ -7,6 +7,7 @@ import com.alanyang.wiki.req.EbookReq;
 import com.alanyang.wiki.resp.EbookResp;
 import com.alanyang.wiki.util.CopyUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -20,7 +21,11 @@ public class EbookService {
         EbookExample ebookExample = new EbookExample();
         //        等於sql where
         EbookExample.Criteria criteria =  ebookExample.createCriteria();
-        criteria.andNameLike("%"+req.getName()+"%");
+//        有傳name參數進來 才去模糊搜索
+        if (!ObjectUtils.isEmpty(req.getName())){
+            criteria.andNameLike("%"+req.getName()+"%");
+        }
+
         List<Ebook> ebookList = ebookMapper.selectByExample(ebookExample);
 
 //        第一種寫法
