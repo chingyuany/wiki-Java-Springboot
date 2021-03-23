@@ -115,7 +115,7 @@ export default defineComponent({
     //onMounted 頁面渲染完和組件都加載完後的生命週期函數, 可以避免頁面還沒載完 就去執行函數
     onMounted(()=>{
       console.log("onMounted");
-      axios.get("http://localhost:8880/ebook/list")
+      axios.get("/ebook/list")
           // .then(function (response) {   和下面寫法一樣
           .then((response) => {
             const data = response.data;
