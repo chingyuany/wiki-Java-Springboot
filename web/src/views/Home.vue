@@ -51,23 +51,44 @@
             :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
         >
           Content
+          <pre>{{ebooks}}</pre>
+          <pre>{{ebooksR}}</pre>
         </a-layout-content>
       </a-layout>
   </a-layout>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent,onMounted,ref,reactive,toRef } from 'vue';
 import axios from 'axios';
 export default defineComponent({
   name: 'Home',
+  //包含vue2的 data(各種變量), mounted and methods
   setup(){
     console.log("setup");
-    axios.get("http://localhost:8880/ebook/list?name=Spring")
-        // .then(function (response) {   和下面寫法一樣
+    //ref響應式數據 更改js的值 會時時更新
+    const ebooks = ref();
+    //books自己取的 因為一定要放到一個屬性裡面
+    const ebooksR = reactive({books:[]});
+    //onMounted 頁面渲染完和組件都加載完後的生命週期函數, 可以避免頁面還沒載完 就去執行函數
+    onMounted(()=>{
+      console.log("onMounted");
+      axios.get("http://localhost:8880/ebook/list?name=Spring")
+          // .then(function (response) {   和下面寫法一樣
           .then((response) => {
-      console.log(response);
+            const data = response.data;
+            ebooks.value = data.content;
+            ebooksR.books = data.content;
+            console.log(response);
     });
+
+    });
+    return{
+      //下面是ref的方法回傳
+      ebooks,
+      //reactive的方法回傳  最前面的ebooks是自己定義的變量 toRef是把所有屬性變成響應式變量   第一個參數是reactive的 const 變數, 第二個是裡面的屬性,
+      ebooksR:toRef(ebooksR,"books")
+    }
   }
 
 });
