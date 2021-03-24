@@ -1,5 +1,7 @@
-<template>
 <!--slots 自定義渲染, custom render 對值渲染, title 表頭渲染-->
+<!--  看6-3介紹-->
+
+<template>
   <a-layout>
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
