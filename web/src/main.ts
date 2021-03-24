@@ -11,6 +11,26 @@ import axios from "axios";
 //依據.env.dev and env.prod 去配置base url, home.vue 裡面的 axios.get("/ebook/list")會自己接上base URL
 axios.defaults.baseURL = process.env.VUE_APP_SERVER;
 
+
+/**
+ * axios拦截器interceptors
+ */
+axios.interceptors.request.use(function (config) {
+    console.log('Request parameter：', config);
+    return config;
+}, error => {
+    return Promise.reject(error);
+});
+axios.interceptors.response.use(function (response) {
+    console.log('Return result：', response);
+    return response;
+}, error => {
+    console.log('Return error：', error);
+    return Promise.reject(error);
+});
+
+
+
 //#app 是index.html裡面的 div 區塊
 const app = createApp(App);
 app.use(store).use(router).use(Antd).mount('#app');
