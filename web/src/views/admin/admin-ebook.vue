@@ -1,29 +1,12 @@
 <!--slots 自定義渲染, custom render 對值渲染, title 表頭渲染-->
-<!--  看6-3介紹-->
-
+<!--  看6-3  6-6介紹-->
+<!--record 是Ebook class-->
+<!--loading 是內建的 true的時候會顯示讀取的動畫-->
 <template>
   <a-layout>
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
-      <p>
-        <a-form layout="inline" :model="param">
-          <a-form-item>
-            <a-input v-model:value="param.name" placeholder="name">
-            </a-input>
-          </a-form-item>
-          <a-form-item>
-            <a-button type="primary" @click="handleQuery({page: 1, size: pagination.pageSize})">
-              Query
-            </a-button>
-          </a-form-item>
-          <a-form-item>
-            <a-button type="primary" @click="add()">
-              New
-            </a-button>
-          </a-form-item>
-        </a-form>
-      </p>
       <a-table
           :columns="columns"
           :row-key="record => record.id"
@@ -32,82 +15,40 @@
           :loading="loading"
           @change="handleTableChange"
       >
+<!--        套用的樣式 customRender -->
         <template #cover="{ text: cover }">
           <img v-if="cover" :src="cover" alt="avatar" />
         </template>
-        <template v-slot:category="{ text, record }">
-          <span>{{ getCategoryName(record.category1Id) }} / {{ getCategoryName(record.category2Id) }}</span>
-        </template>
         <template v-slot:action="{ text, record }">
+<!--          空格組件-->
           <a-space size="small">
-            <router-link :to="'/admin/doc?ebookId=' + record.id">
-              <a-button type="primary">
-                文档管理
-              </a-button>
-            </router-link>
-            <a-button type="primary" @click="edit(record)">
-              编辑
+            <a-button type="primary">
+              Edit
             </a-button>
-            <a-popconfirm
-                title="Cannot recovery after delete，Confirm delete?"
-                ok-text="Yes"
-                cancel-text="No"
-                @confirm="handleDelete(record.id)"
-            >
-              <a-button type="danger">
-                Delete
-              </a-button>
-            </a-popconfirm>
+            <a-button type="danger">
+              Delete
+            </a-button>
           </a-space>
         </template>
       </a-table>
     </a-layout-content>
   </a-layout>
-
-  <a-modal
-      title="Ebook Form"
-      v-model:visible="modalVisible"
-      :confirm-loading="modalLoading"
-      @ok="handleModalOk"
-  >
-    <a-form :model="ebook" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
-      <a-form-item label="Cover">
-        <a-input v-model:value="ebook.cover" />
-      </a-form-item>
-      <a-form-item label="Name">
-        <a-input v-model:value="ebook.name" />
-      </a-form-item>
-      <a-form-item label="Classification">
-        <a-cascader
-            v-model:value="categoryIds"
-            :field-names="{ label: 'name', value: 'id', children: 'children' }"
-            :options="level1"
-        />
-      </a-form-item>
-      <a-form-item label="Description">
-        <a-input v-model:value="ebook.description" type="textarea" />
-      </a-form-item>
-    </a-form>
-  </a-modal>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
 import axios from 'axios';
-import { message } from 'ant-design-vue';
-// import {Tool} from "@/util/tool";
 
 export default defineComponent({
   name: 'AdminEbook',
   setup() {
-    const param = ref();
-    param.value = {};
     const ebooks = ref();
     const pagination = ref({
       current: 1,
-      pageSize: 10,
+      pageSize: 4,
       total: 0
     });
+    //loading 是內建的 true的時候會顯示讀取的動畫
     const loading = ref(false);
 
     const columns = [
@@ -121,11 +62,16 @@ export default defineComponent({
         dataIndex: 'name'
       },
       {
-        title: 'Classification',
-        slots: { customRender: 'category' }
+        title: 'Category1',
+        key: 'category1Id',
+        dataIndex: 'category1Id'
       },
       {
-        title: 'Document number',
+        title: 'Category2',
+        dataIndex: 'category2Id'
+      },
+      {
+        title: 'Document Amount',
         dataIndex: 'docCount'
       },
       {
@@ -148,31 +94,28 @@ export default defineComponent({
      **/
     const handleQuery = (params: any) => {
       loading.value = true;
-      // 如果不清空现有数据，则编辑保存重新加载数据后，再点编辑，则列表显示的还是编辑前的数据
-      ebooks.value = [];
+      //另一種get方式為拼接  "?page="+page+"&" 下面是第一種方法 直接寫params 固定寫法
       axios.get("/ebook/list", {
         params: {
           page: params.page,
-          size: params.size,
-          name: param.value.name
+          size: params.size
         }
       }).then((response) => {
-        loading.value = false;
-        const data = response.data;
-        if (data.success) {
-          ebooks.value = data.content.list;
 
-          // 重置分页按钮
-          pagination.value.current = params.page;
-          pagination.value.total = data.content.total;
-        } else {
-          message.error(data.message);
-        }
+        loading.value = false;
+        //response 是後端傳回來的值
+        const data = response.data;
+        //響應變量用.value
+        ebooks.value = data.content.list;
+
+        // 重置分页按钮  pagination.value.current是內建的函數
+        pagination.value.current = params.page;
+        pagination.value.total = data.content.total;
       });
     };
 
     /**
-     * 表格点击页码时触发
+     * 有人點擊頁數按鈕 表格点击页码时触发
      */
     const handleTableChange = (pagination: any) => {
       console.log("看看自带的分页参数都有啥：" + pagination);
@@ -181,134 +124,20 @@ export default defineComponent({
         size: pagination.pageSize
       });
     };
-
-    // -------- 表单 ---------
-    /**
-     * 数组，[100, 101]对应：前端开发 / Vue
-     */
-    const categoryIds = ref();
-    const ebook = ref();
-    const modalVisible = ref(false);
-    const modalLoading = ref(false);
-    const handleModalOk = () => {
-      modalLoading.value = true;
-      ebook.value.category1Id = categoryIds.value[0];
-      ebook.value.category2Id = categoryIds.value[1];
-      axios.post("/ebook/save", ebook.value).then((response) => {
-        modalLoading.value = false;
-        const data = response.data; // data = commonResp
-        if (data.success) {
-          modalVisible.value = false;
-
-          // 重新加载列表
-          handleQuery({
-            page: pagination.value.current,
-            size: pagination.value.pageSize,
-          });
-        } else {
-          message.error(data.message);
-        }
-      });
-    };
-
-    /**
-     * 编辑
-     */
-    const edit = (record: any) => {
-      modalVisible.value = true;
-      // ebook.value = Tool.copy(record);
-      categoryIds.value = [ebook.value.category1Id, ebook.value.category2Id]
-    };
-
-    /**
-     * 新增
-     */
-    const add = () => {
-      modalVisible.value = true;
-      ebook.value = {};
-    };
-
-    const handleDelete = (id: number) => {
-      axios.delete("/ebook/delete/" + id).then((response) => {
-        const data = response.data; // data = commonResp
-        if (data.success) {
-          // 重新加载列表
-          handleQuery({
-            page: pagination.value.current,
-            size: pagination.value.pageSize,
-          });
-        } else {
-          message.error(data.message);
-        }
-      });
-    };
-
-    const level1 =  ref();
-    let categorys: any;
-    /**
-     * 查询所有分类
-     **/
-    const handleQueryCategory = () => {
-      loading.value = true;
-      axios.get("/category/all").then((response) => {
-        loading.value = false;
-        const data = response.data;
-        if (data.success) {
-          categorys = data.content;
-          console.log("原始数组：", categorys);
-
-          level1.value = [];
-          // level1.value = Tool.array2Tree(categorys, 0);
-          console.log("树形结构：", level1.value);
-
-          // 加载完分类后，再加载电子书，否则如果分类树加载很慢，则电子书渲染会报错
-          handleQuery({
-            page: 1,
-            size: pagination.value.pageSize,
-          });
-        } else {
-          message.error(data.message);
-        }
-      });
-    };
-
-    const getCategoryName = (cid: number) => {
-      // console.log(cid)
-      let result = "";
-      categorys.forEach((item: any) => {
-        if (item.id === cid) {
-          // return item.name; // 注意，这里直接return不起作用
-          result = item.name;
-        }
-      });
-      return result;
-    };
-
+    //初始化頁面的時候 也是需要先查詢一次 第一頁
     onMounted(() => {
-      handleQueryCategory();
+      handleQuery({
+        page: 1,
+        size: pagination.value.pageSize,
+      });
     });
 
     return {
-      param,
       ebooks,
       pagination,
       columns,
       loading,
-      handleTableChange,
-      handleQuery,
-      getCategoryName,
-
-      edit,
-      add,
-
-      ebook,
-      modalVisible,
-      modalLoading,
-      handleModalOk,
-      categoryIds,
-      level1,
-
-      handleDelete
+      handleTableChange
     }
   }
 });

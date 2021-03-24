@@ -89,18 +89,18 @@ import { defineComponent,onMounted,ref,reactive,toRef } from 'vue';
 import axios from 'axios';
 
 // ant design view的list 模板代碼
-const listData: any = [];
-for (let i = 0; i < 23; i++) {
-  listData.push({
-    href: 'https://www.antdv.com/',
-    title: `ant design vue part ${i}`,
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    description:
-        'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-    content:
-        'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-  });
-}
+// const listData: any = [];
+// for (let i = 0; i < 23; i++) {
+//   listData.push({
+//     href: 'https://www.antdv.com/',
+//     title: `ant design vue part ${i}`,
+//     avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+//     description:
+//         'Ant Design, a design language for background applications, is refined by Ant UED Team.',
+//     content:
+//         'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
+//   });
+// }
 
 export default defineComponent({
   name: 'Home',
@@ -114,12 +114,18 @@ export default defineComponent({
     //onMounted 頁面渲染完和組件都加載完後的生命週期函數, 可以避免頁面還沒載完 就去執行函數
     onMounted(()=>{
       console.log("onMounted");
-      axios.get("/ebook/list")
+      axios.get("/ebook/list",{
+        //首頁顯示全部的資料  因為電子書應該不會超過1000 所以設1000
+        params:{
+          page:1,
+          size: 1000
+        }
+      })
           // .then(function (response) {   和下面寫法一樣
           .then((response) => {
             const data = response.data;
-            ebooks.value = data.content;
-            ebooksR.books = data.content;
+            ebooks.value = data.content.list;
+            // ebooksR.books = data.content;
 
     });
 
@@ -128,9 +134,11 @@ export default defineComponent({
       //下面是ref的方法回傳
       ebooks,
       //reactive的方法回傳  最前面的ebooks是自己定義的變量 toRef是把所有屬性變成響應式變量   第一個參數是reactive的 const 變數, 第二個是裡面的屬性,
-      ebooksR:toRef(ebooksR,"books"),
-      // ant design view的list 模板代碼
-      listData,
+      // ebooksR:toRef(ebooksR,"books"),
+
+      // 測試數據 ant design view的list 模板代碼
+      // listData,
+
       pagination : {
         onChange: (page: number) => {
           console.log(page);
