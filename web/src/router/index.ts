@@ -26,7 +26,7 @@ const routes: Array<RouteRecordRaw> = [
 ]
 
 const router = createRouter({
-  //依據不同環境去抓取base url 在main.ts
+  //依據不同環境去抓取base url 在main.ts,  如果不是歷史模式 會顯示成localhost/#/about, 歷史模式 localhost/about
   history: createWebHistory(process.env.BASE_URL),
   routes
 })

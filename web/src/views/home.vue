@@ -45,8 +45,7 @@
         </a-sub-menu>
       </a-menu>
     </a-layout-sider>
-    <a-layout style="padding: 0 24px 24px">
-
+<!--    <a-layout style="padding: 0 24px 24px">-->
       <a-layout-content
           :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
       >
@@ -79,7 +78,7 @@
 
 
       </a-layout-content>
-    </a-layout>
+<!--    </a-layout>-->
   </a-layout>
 </template>
 
