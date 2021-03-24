@@ -1,3 +1,4 @@
+/*
 package com.alanyang.wiki.filter;
 
 import org.slf4j.Logger;
@@ -34,3 +35,4 @@ public class LogFilter implements Filter {
         LOG.info("------------- LogFilter end Elapsed time：{} ms -------------", System.currentTimeMillis() - startTime);
     }
 }
+*/
