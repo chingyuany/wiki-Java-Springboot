@@ -1,8 +1,12 @@
 package com.alanyang.wiki.req;
+
+import javax.validation.constraints.NotNull;
+
 //domain/ebook
 public class EbookSaveReq {
     private Long id;
 
+    @NotNull(message = "name cannot be empty")
     private String name;
 
     private Long category1Id;

@@ -9,6 +9,7 @@ import com.alanyang.wiki.service.EbookService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 //返回字串 or json
 @RestController
@@ -22,7 +23,8 @@ public class EbookController {
 
 
     @GetMapping("/list")
-    public CommonResp list(EbookQueryReq req){
+//    @valid  開啟驗證規則 在pagereq 裡面
+    public CommonResp list(@Valid EbookQueryReq req){
         CommonResp<PageResp<EbookQueryResp>> resp = new CommonResp<>();
         PageResp<EbookQueryResp> list = ebookService.list(req);
         resp.setContent(list);
@@ -31,13 +33,13 @@ public class EbookController {
     @PostMapping("/save")
 //    commonresp 回傳True而已 new出來一定是true
 //    如果是Json格式post 一定要加上@RequestBody,如果是form post 就不需要
-    public CommonResp save(@RequestBody EbookSaveReq req){
+    public CommonResp save(@Valid @RequestBody EbookSaveReq req){
         CommonResp resp = new CommonResp<>();
         ebookService.save(req);
 
         return resp;
     }
-//    {}是指動態
+//    {}是指動態  pathvariable 可以獲取url上的參數
     @DeleteMapping ("/delete/{id}")
     public CommonResp delete(@PathVariable Long id){
         CommonResp resp = new CommonResp<>();

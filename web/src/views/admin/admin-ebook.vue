@@ -79,6 +79,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
 import axios from 'axios';
+import { message } from 'ant-design-vue';
 
 export default defineComponent({
   name: 'AdminEbook',
@@ -146,12 +147,18 @@ export default defineComponent({
         loading.value = false;
         //response 是後端傳回來的值
         const data = response.data;
-        //響應變量用.value
-        ebooks.value = data.content.list;
+        if (data.success){
 
-        // 重置分页按钮  pagination.value.current是內建的函數
-        pagination.value.current = params.page;
-        pagination.value.total = data.content.total;
+          //響應變量用.value
+          ebooks.value = data.content.list;
+
+          // 重置分页按钮  pagination.value.current是內建的函數
+          pagination.value.current = params.page;
+          pagination.value.total = data.content.total;
+        }else{
+          message.error(data.message);
+        }
+
       });
     };
 
@@ -174,16 +181,19 @@ export default defineComponent({
       //post 不需要像get一樣寫param
       axios.post("/ebook/save", ebook.value
       ).then((response) => {
+        modalLoading.value = false;
           //response 是後端傳回來的值
         const data = response.data;
         if (data.success){
           modalVisible.value = false;
-          modalLoading.value = false;
+
           //reload form
           handleQuery({
             page: pagination.value.current,
             size: pagination.value.pageSize,
           });
+        }else{
+          message.error(data.message);
         }
       });
 

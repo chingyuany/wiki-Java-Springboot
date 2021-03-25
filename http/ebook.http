@@ -1,7 +1,7 @@
 
 ###
 
-GET http://localhost:8880/ebook/list?page=1&size=4
+GET http://localhost:8880/ebook/list?page=1&size=1002
 
 ###
 POST http://localhost:8880/ebook/save
