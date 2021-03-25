@@ -7,6 +7,11 @@
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
+      <p>
+        <a-button type="primary" @click="add()" size="large">
+          New
+        </a-button>
+      </p>
       <a-table
           :columns="columns"
           :row-key="record => record.id"
@@ -185,7 +190,10 @@ export default defineComponent({
       ebook.value = record
     };
 
-
+    const add = () => {
+      modalVisible.value = true;
+      ebook.value = {}
+    };
 
     //初始化頁面的時候 也是需要先查詢一次 第一頁
     onMounted(() => {
@@ -203,6 +211,8 @@ export default defineComponent({
       handleTableChange,
 
       edit,
+      add,
+
       modalVisible,
       modalLoading,
       handleModalOk,

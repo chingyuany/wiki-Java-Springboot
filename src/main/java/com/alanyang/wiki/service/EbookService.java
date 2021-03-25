@@ -8,6 +8,7 @@ import com.alanyang.wiki.req.EbookSaveReq;
 import com.alanyang.wiki.resp.EbookQueryResp;
 import com.alanyang.wiki.resp.PageResp;
 import com.alanyang.wiki.util.CopyUtil;
+import com.alanyang.wiki.util.SnowFlake;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
@@ -24,6 +25,9 @@ public class EbookService {
     private static final Logger LOG = LoggerFactory.getLogger(EbookService.class);
     @Resource
     private EbookMapper ebookMapper;
+    @Resource
+    private SnowFlake snowFlake;
+
     public PageResp<EbookQueryResp> list(EbookQueryReq req){
 
 //        方法實作於 resource/mapper/EbookMapper.xml
@@ -68,6 +72,7 @@ public class EbookService {
     public void save(EbookSaveReq req){
         Ebook ebook = CopyUtil.copy(req,Ebook.class);
         if (ObjectUtils.isEmpty(req.getId())){
+            ebook.setId(snowFlake.nextId());
 //            新增紀錄
             ebookMapper.insert(ebook);
         }else{
