@@ -77,9 +77,11 @@
             ref="select"
         >
           <a-select-option :value="0">
-            无
+            None
           </a-select-option>
+<!--          循環1級分類 把name顯示   id放到 category.parent   如果當前文本框分類的id 是目前選項的id 就變灰色不能選  因為選自己會把自己父分類改成自己本身ID-->
           <a-select-option v-for="c in level1" :key="c.id" :value="c.id" :disabled="category.id === c.id">
+<!--            在Html裡面要使用響應式變量就要用{{}}-->
             {{c.name}}
           </a-select-option>
         </a-select>
