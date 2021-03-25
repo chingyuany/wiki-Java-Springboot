@@ -157,11 +157,24 @@ export default defineComponent({
     const modalVisible = ref(false);
     const modalLoading = ref(false);
     const handleModalOk = () => {
-      modalLoading.value = true;
-      setTimeout(() => {
-        modalVisible.value = false;
-        modalLoading.value = false;
-      }, 2000);
+      modalLoading.value = true
+      //post 不需要像get一樣寫param
+      axios.post("/ebook/save", ebook.value
+      ).then((response) => {
+          //response 是後端傳回來的值
+        const data = response.data;
+        if (data.success){
+          modalVisible.value = false;
+          modalLoading.value = false;
+          //reload form
+          handleQuery({
+            page: pagination.value.current,
+            size: pagination.value.pageSize,
+          });
+        }
+      });
+
+
     };
 
     /**
