@@ -31,9 +31,17 @@
             <a-button type="primary" @click="edit(record)">
               Edit
             </a-button>
-            <a-button type="danger">
-              Delete
-            </a-button>
+            <a-popconfirm
+                title="Delete cannot recover. Are you sure delete this row?"
+                ok-text="Yes"
+                cancel-text="No"
+                @confirm="handleDelete(record.id)"
+
+            >
+              <a-button type="danger">
+                Delete
+              </a-button>
+            </a-popconfirm>
           </a-space>
         </template>
       </a-table>
@@ -59,7 +67,7 @@
          <a-input v-model:value="ebook.category2Id" />
        </a-form-item>
        <a-form-item label="Description">
-         <a-input v-model:value="ebook.desc" type="textarea" />
+         <a-input v-model:value="ebook.description" type="textarea" />
        </a-form-item>
      </a-form>
 
@@ -194,7 +202,21 @@ export default defineComponent({
       modalVisible.value = true;
       ebook.value = {}
     };
-
+    //後端long 前端number
+    const handleDelete = (id:number) =>{
+      axios.delete("/ebook/delete/"+id
+      ).then((response) => {
+        //response 是後端傳回來的值, data = common response
+        const data = response.data;
+        if (data.success){
+          //reload form
+          handleQuery({
+            page: pagination.value.current,
+            size: pagination.value.pageSize,
+          });
+        }
+      });
+    }
     //初始化頁面的時候 也是需要先查詢一次 第一頁
     onMounted(() => {
       handleQuery({
@@ -212,6 +234,7 @@ export default defineComponent({
 
       edit,
       add,
+      handleDelete,
 
       modalVisible,
       modalLoading,
