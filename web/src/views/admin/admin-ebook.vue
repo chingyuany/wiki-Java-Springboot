@@ -19,10 +19,11 @@
         <template #cover="{ text: cover }">
           <img v-if="cover" :src="cover" alt="avatar" />
         </template>
+<!--        record 是一列的數據-->
         <template v-slot:action="{ text, record }">
 <!--          空格組件-->
           <a-space size="small">
-            <a-button type="primary">
+            <a-button type="primary" @click="edit(record)">
               Edit
             </a-button>
             <a-button type="danger">
@@ -33,6 +34,33 @@
       </a-table>
     </a-layout-content>
   </a-layout>
+   <a-modal
+      title="Ebook Form"
+        v-model:visible="modalVisible"
+       :confirm-loading="modalLoading"
+        @ok="handleModalOk"
+      >
+     <a-form :model="ebook" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+       <a-form-item label="Cover">
+         <a-input v-model:value="ebook.cover" />
+       </a-form-item>
+       <a-form-item label="Name">
+         <a-input v-model:value="ebook.name" />
+       </a-form-item>
+       <a-form-item label="Category1">
+         <a-input v-model:value="ebook.category1Id" />
+       </a-form-item>
+       <a-form-item label="Category2">
+         <a-input v-model:value="ebook.category2Id" />
+       </a-form-item>
+       <a-form-item label="Description">
+         <a-input v-model:value="ebook.desc" type="textarea" />
+       </a-form-item>
+     </a-form>
+
+
+
+    </a-modal>
 </template>
 
 <script lang="ts">
@@ -124,6 +152,28 @@ export default defineComponent({
         size: pagination.pageSize
       });
     };
+    // -------- Edit 表单 ---------
+    const ebook = ref({});
+    const modalVisible = ref(false);
+    const modalLoading = ref(false);
+    const handleModalOk = () => {
+      modalLoading.value = true;
+      setTimeout(() => {
+        modalVisible.value = false;
+        modalLoading.value = false;
+      }, 2000);
+    };
+
+    /**
+     * 编辑
+     */
+    const edit = (record:any) => {
+      modalVisible.value = true;
+      ebook.value = record
+    };
+
+
+
     //初始化頁面的時候 也是需要先查詢一次 第一頁
     onMounted(() => {
       handleQuery({
@@ -137,7 +187,13 @@ export default defineComponent({
       pagination,
       columns,
       loading,
-      handleTableChange
+      handleTableChange,
+
+      edit,
+      modalVisible,
+      modalLoading,
+      handleModalOk,
+      ebook
     }
   }
 });
