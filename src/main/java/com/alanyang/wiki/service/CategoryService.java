@@ -32,6 +32,7 @@ public class CategoryService {
 
 //        方法實作於 resource/mapper/CategoryMapper.xml
         CategoryExample categoryExample = new CategoryExample();
+        categoryExample.setOrderByClause("sort asc");
         //        等於sql where
         CategoryExample.Criteria criteria =  categoryExample.createCriteria();
         if (!ObjectUtils.isEmpty(req.getName())){
@@ -66,6 +67,18 @@ public class CategoryService {
 //        返回SQL查詢結果的列表
         pageResp.setList(list);
         return pageResp;
+    }
+    public List<CategoryQueryResp> all(){
+
+//        方法實作於 resource/mapper/CategoryMapper.xml
+        CategoryExample categoryExample = new CategoryExample();
+        categoryExample.setOrderByClause("sort asc");
+
+        List<Category> categoryList = categoryMapper.selectByExample(categoryExample);
+//        用CopyUtil class的列表複製寫法
+        List<CategoryQueryResp> list = CopyUtil.copyList(categoryList, CategoryQueryResp.class);
+
+        return list;
     }
 
     public void save(CategorySaveReq req){

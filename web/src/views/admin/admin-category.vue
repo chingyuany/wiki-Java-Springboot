@@ -10,13 +10,13 @@
       <p>
 <!--        inline 排在同一列-->
         <a-form layout="inline" :model="param">
+<!--          <a-form-item>-->
+<!--            <a-input v-model:value="param.name" placeholder="Name">-->
+<!--            </a-input>-->
+<!--          </a-form-item>-->
           <a-form-item>
-            <a-input v-model:value="param.name" placeholder="Name">
-            </a-input>
-          </a-form-item>
-          <a-form-item>
-            <a-button type="primary" @click="handleQuery({page: 1, size: pagination.pageSize})">
-              Search
+            <a-button type="primary" @click="handleQuery()">
+              Show All
             </a-button>
           </a-form-item>
           <a-form-item>
@@ -29,10 +29,10 @@
       <a-table
           :columns="columns"
           :row-key="record => record.id"
-          :data-source="categorys"
-          :pagination="pagination"
+          :data-source="level1"
+
           :loading="loading"
-          @change="handleTableChange"
+          :pagination="false"
       >
 <!--        套用的樣式 customRender -->
         <template #cover="{ text: cover }">
@@ -103,11 +103,7 @@ export default defineComponent({
     const param = ref();
     param.value = {};
     const categorys = ref();
-    const pagination = ref({
-      current: 1,
-      pageSize: 4,
-      total: 0
-    });
+
     //loading 是內建的 true的時候會顯示讀取的動畫
     const loading = ref(false);
 
@@ -131,20 +127,25 @@ export default defineComponent({
         slots: { customRender: 'action' }
       }
     ];
+    /**
+     * 一级分类树，children属性就是二级分类
+     * [{
+     *   id: "",
+     *   name: "",
+     *   children: [{
+     *     id: "",
+     *     name: "",
+     *   }]
+     * }]
+     */
 
+    const level1 = ref(); // 一级分类树，children属性就是二级分类
     /**
      * 数据查询
      **/
-    const handleQuery = (params: any) => {
+    const handleQuery = () => {
       loading.value = true;
-      //另一種get方式為拼接  "?page="+page+"&" 下面是第一種方法 直接寫params 固定寫法
-      axios.get("/category/list", {
-        params: {
-          page: params.page,
-          size: params.size,
-          name: param.value.name
-        }
-      }).then((response) => {
+      axios.get("/category/all").then((response) => {
 
         loading.value = false;
         //response 是後端傳回來的值
@@ -152,11 +153,14 @@ export default defineComponent({
         if (data.success){
 
           //響應變量用.value
-          categorys.value = data.content.list;
+          categorys.value = data.content;
+          console.log("Original table：", categorys.value);
 
-          // 重置分页按钮  pagination.value.current是內建的函數
-          pagination.value.current = params.page;
-          pagination.value.total = data.content.total;
+          level1.value = [];
+          level1.value = Tool.array2Tree(categorys.value, 0);
+          console.log("Tree data：", level1);
+
+
         }else{
           message.error(data.message);
         }
@@ -164,16 +168,8 @@ export default defineComponent({
       });
     };
 
-    /**
-     * 有人點擊頁數按鈕 表格点击页码时触发
-     */
-    const handleTableChange = (pagination: any) => {
-      console.log("看看自带的分页参数都有啥：" + pagination);
-      handleQuery({
-        page: pagination.current,
-        size: pagination.pageSize
-      });
-    };
+
+
     // -------- Edit 表单 ---------
     const category = ref({});
     const modalVisible = ref(false);
@@ -190,10 +186,7 @@ export default defineComponent({
           modalVisible.value = false;
 
           //reload form
-          handleQuery({
-            page: pagination.value.current,
-            size: pagination.value.pageSize,
-          });
+          handleQuery();
         }else{
           message.error(data.message);
         }
@@ -222,27 +215,21 @@ export default defineComponent({
         const data = response.data;
         if (data.success){
           //reload form
-          handleQuery({
-            page: pagination.value.current,
-            size: pagination.value.pageSize,
-          });
+          handleQuery();
         }
       });
     }
     //初始化頁面的時候 也是需要先查詢一次 第一頁
     onMounted(() => {
-      handleQuery({
-        page: 1,
-        size: pagination.value.pageSize,
-      });
+      handleQuery();
     });
 
     return {
-      categorys,
-      pagination,
+      // categorys,
+      level1,
       columns,
       loading,
-      handleTableChange,
+
       param,
       edit,
       add,

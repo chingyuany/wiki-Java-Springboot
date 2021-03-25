@@ -2,14 +2,15 @@ package com.alanyang.wiki.controller;
 
 import com.alanyang.wiki.req.CategoryQueryReq;
 import com.alanyang.wiki.req.CategorySaveReq;
-import com.alanyang.wiki.resp.CommonResp;
 import com.alanyang.wiki.resp.CategoryQueryResp;
+import com.alanyang.wiki.resp.CommonResp;
 import com.alanyang.wiki.resp.PageResp;
 import com.alanyang.wiki.service.CategoryService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 
 //返回字串 or json
 @RestController
@@ -27,6 +28,13 @@ public class CategoryController {
     public CommonResp list(@Valid CategoryQueryReq req){
         CommonResp<PageResp<CategoryQueryResp>> resp = new CommonResp<>();
         PageResp<CategoryQueryResp> list = categoryService.list(req);
+        resp.setContent(list);
+        return resp;
+    }
+    @GetMapping("/all")
+    public CommonResp all(){
+        CommonResp<List<CategoryQueryResp>> resp = new CommonResp<>();
+        List<CategoryQueryResp> list = categoryService.all();
         resp.setContent(list);
         return resp;
     }
