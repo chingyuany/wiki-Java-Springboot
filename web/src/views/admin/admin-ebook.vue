@@ -47,6 +47,11 @@
         <template v-slot:action="{ text, record }">
 <!--          空格組件-->
           <a-space size="small">
+            <router-link to ="/admin/doc">
+            <a-button type="primary" >
+              Document Mgmt
+            </a-button>
+            </router-link>
             <a-button type="primary" @click="edit(record)">
               Edit
             </a-button>
