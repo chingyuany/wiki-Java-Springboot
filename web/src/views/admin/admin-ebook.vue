@@ -38,6 +38,11 @@
         <template #cover="{ text: cover }">
           <img v-if="cover" :src="cover" alt="avatar" />
         </template>
+<!--          text 和record是一樣的值 category 是自己取的名字-->
+          <template v-slot:category="{ text, record }">
+            <span>{{ getCategoryName(record.category1Id) }} / {{ getCategoryName(record.category2Id) }}</span>
+          </template>
+
 <!--        record 是一列的數據-->
         <template v-slot:action="{ text, record }">
 <!--          空格組件-->
@@ -122,13 +127,8 @@ export default defineComponent({
         dataIndex: 'name'
       },
       {
-        title: 'Category1',
-        key: 'category1Id',
-        dataIndex: 'category1Id'
-      },
-      {
-        title: 'Category2',
-        dataIndex: 'category2Id'
+        title: 'Category',
+        slots: { customRender: 'category' }
       },
       {
         title: 'Document Amount',
@@ -154,6 +154,8 @@ export default defineComponent({
      **/
     const handleQuery = (params: any) => {
       loading.value = true;
+      // 如果不清空现有数据，则编辑保存重新加载数据后，再点编辑，则列表显示的还是编辑前的数据
+      ebooks.value = [];
       //另一種get方式為拼接  "?page="+page+"&" 下面是第一種方法 直接寫params 固定寫法
       axios.get("/ebook/list", {
         params: {
@@ -255,6 +257,7 @@ export default defineComponent({
       });
     }
     const level1 =  ref();
+    let categorys: any;
     /**
      * 查询所有分类
      **/
@@ -264,7 +267,7 @@ export default defineComponent({
         loading.value = false;
         const data = response.data;
         if (data.success) {
-          const categorys = data.content;
+          categorys = data.content;
           console.log("原始数组：", categorys);
 
           level1.value = [];
@@ -274,7 +277,17 @@ export default defineComponent({
           message.error(data.message);
         }
       })};
-
+    const getCategoryName = (cid: number) => {
+      // console.log(cid)
+      let result = "";
+      categorys.forEach((item: any) => {
+        if (item.id === cid) {
+          // return item.name; // 注意，这里直接return不起作用
+          result = item.name;
+        }
+      });
+      return result;
+    };
 
     //初始化頁面的時候 也是需要先查詢一次 第一頁
     onMounted(() => {
@@ -296,6 +309,7 @@ export default defineComponent({
       add,
       handleDelete,
 
+      getCategoryName,
       modalVisible,
       modalLoading,
       handleModalOk,
