@@ -8,10 +8,8 @@
           @click="handleClick"
       >
         <a-menu-item key="welcome">
-          <router-link :to="'/'">
             <MailOutlined />
             <span>Welcome!</span>
-          </router-link>
         </a-menu-item>
         <a-sub-menu v-for="item in level1" :key="item.id">
           <template v-slot:title>
@@ -28,9 +26,13 @@
       <a-layout-content
           :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
       >
+<!--        顯示歡迎頁面 或下面的list-->
+        <div class="welcome" v-show="isShowWelcome">
+          <h1>Welcome to Alan's Wiki!</h1>
+        </div>
 <!--下面是ant design vue 裡面的list代碼 https://2x.antdv.com/components/list-cn-->
 <!--        gutter 200px 間距 -->
-          <a-list item-layout="vertical" size="large" :grid="{ gutter: 20, column: 3 }"  :data-source="ebooks">
+          <a-list v-show="!isShowWelcome" item-layout="vertical" size="large" :grid="{ gutter: 20, column: 3 }"  :data-source="ebooks">
 
             <template #renderItem="{ item }">
               <a-list-item key="item.name">
@@ -114,32 +116,45 @@ export default defineComponent({
       });
     };
 
-    const handleClick = () => {
-      console.log("menu click")
+
+    const isShowWelcome = ref(true);
+    let categoryId2 = 0;
+    const handleQueryEbook = () => {
+      axios.get("/ebook/list", {
+        params: {
+          page: 1,
+          size: 1000,
+          categoryId2: categoryId2
+        }
+      }).then((response) => {
+        const data = response.data;
+        ebooks.value = data.content.list;
+        // ebooks1.books = data.content;
+      });
     };
 
+
+    const handleClick = (value: any) => {
+      // console.log("menu click", value)
+      if (value.key === 'welcome') {
+        isShowWelcome.value = true;
+      } else {
+        isShowWelcome.value = false;
+        //只查詢二級分類 因為menu模板的onclick只有二級menu才有效
+        categoryId2 = value.key
+        handleQueryEbook();
+      }
+      //另外一種寫法
+      // isShowWelcome.value = value.key === 'welcome';
+    };
 
 
     //onMounted 頁面渲染完和組件都加載完後的生命週期函數, 可以避免頁面還沒載完 就去執行函數
     onMounted(()=>{
       handleQueryCategory();
-      console.log("onMounted");
-      axios.get("/ebook/list",{
-        //首頁顯示全部的資料  因為電子書應該不會超過1000 所以設1000
-        params:{
-          page:1,
-          size: 1000
-        }
-      })
-          // .then(function (response) {   和下面寫法一樣
-          .then((response) => {
-            const data = response.data;
-            ebooks.value = data.content.list;
-            // ebooksR.books = data.content;
-
     });
 
-    });
+
     return{
       //下面是ref的方法回傳
       ebooks,
@@ -162,6 +177,7 @@ export default defineComponent({
     ],
       handleClick,
       level1,
+      isShowWelcome
     }
   }
 
