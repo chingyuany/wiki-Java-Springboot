@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
 
 //返回字串 or json
@@ -48,10 +49,11 @@ public class DocController {
         return resp;
     }
 //    {}是指動態  pathvariable 可以獲取url上的參數
-    @DeleteMapping ("/delete/{id}")
-    public CommonResp delete(@PathVariable Long id){
+    @DeleteMapping ("/delete/{idsStr}")
+    public CommonResp delete(@PathVariable String idsStr){
         CommonResp resp = new CommonResp<>();
-        docService.delete(id);
+        List<String> list = Arrays.asList(idsStr.split(","));
+        docService.delete(list);
         return resp;
     }
 }
