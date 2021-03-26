@@ -113,10 +113,20 @@ import { defineComponent, onMounted, ref } from 'vue';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
 import {Tool} from "@/util/tool";
+import {useRoute} from "vue-router";
 
 export default defineComponent({
   name: 'AdminDoc',
-  setup() {
+  setup: function () {
+    const route = useRoute()
+    // console.log("路由：", route);
+    // console.log("route.path：", route.path);
+    // console.log("route.query：", route.query);
+    //用另一種傳遞方式 可以用params取參數值  admin/doc/docid
+    // console.log("route.param：", route.params);
+    // console.log("route.fullPath：", route.fullPath);
+    // console.log("route.name：", route.name);
+    // console.log("route.meta：", route.meta);
     const param = ref();
     param.value = {};
     const docs = ref();
@@ -141,7 +151,7 @@ export default defineComponent({
       {
         title: 'Action',
         key: 'action',
-        slots: { customRender: 'action' }
+        slots: {customRender: 'action'}
       }
     ];
     /**
@@ -169,7 +179,7 @@ export default defineComponent({
         level1.value = [];
         //response 是後端傳回來的值
         const data = response.data;
-        if (data.success){
+        if (data.success) {
 
           //響應變量用.value
           docs.value = data.content;
@@ -180,13 +190,12 @@ export default defineComponent({
           console.log("Tree data：", level1);
 
 
-        }else{
+        } else {
           message.error(data.message);
         }
 
       });
     };
-
 
 
     // -------- Edit 表单 ---------
@@ -202,14 +211,14 @@ export default defineComponent({
       axios.post("/doc/save", doc.value
       ).then((response) => {
         modalLoading.value = false;
-          //response 是後端傳回來的值
+        //response 是後端傳回來的值
         const data = response.data;
-        if (data.success){
+        if (data.success) {
           modalVisible.value = false;
 
           //reload form
           handleQuery();
-        }else{
+        } else {
           message.error(data.message);
         }
       });
@@ -250,14 +259,14 @@ export default defineComponent({
     /**
      * 编辑
      */
-    const edit = (record:any) => {
+    const edit = (record: any) => {
       modalVisible.value = true;
       doc.value = Tool.copy(record);
       // 不能选择当前节点及其所有子孙节点，作为父节点，会使树断开
       treeSelectData.value = Tool.copy(level1.value);
       setDisable(treeSelectData.value, record.id);
 
-               // 为选择树添加一个"无"  unshift往數組前面添加
+      // 为选择树添加一个"无"  unshift往數組前面添加
       treeSelectData.value.unshift({id: 0, name: 'None'});
 
 
@@ -265,18 +274,18 @@ export default defineComponent({
 
     const add = () => {
       modalVisible.value = true;
-      doc.value = {}
+      doc.value = {ebookId: route.query.ebookId}
       treeSelectData.value = Tool.copy(level1.value);
       // 为选择树添加一个"无"  unshift往數組前面添加
       treeSelectData.value.unshift({id: 0, name: 'None'});
     };
     //後端long 前端number
-    const handleDelete = (id:number) =>{
-      axios.delete("/doc/delete/"+id
+    const handleDelete = (id: number) => {
+      axios.delete("/doc/delete/" + id
       ).then((response) => {
         //response 是後端傳回來的值, data = common response
         const data = response.data;
-        if (data.success){
+        if (data.success) {
           //reload form
           handleQuery();
         }

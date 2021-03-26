@@ -47,7 +47,7 @@
         <template v-slot:action="{ text, record }">
 <!--          空格組件-->
           <a-space size="small">
-            <router-link to ="/admin/doc">
+            <router-link :to ="'/admin/doc?ebookId='+record.id">
             <a-button type="primary" >
               Document Mgmt
             </a-button>
