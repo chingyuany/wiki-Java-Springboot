@@ -40,9 +40,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent,ref } from 'vue';
+import {computed, defineComponent, ref} from 'vue';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
+import store from "@/store";
 
 declare let hexMd5: any;
 declare let KEY: any;
@@ -56,8 +57,7 @@ export default defineComponent({
       password: "test1234"
     });
     //登入後保存的訊息
-    const user = ref();
-    user.value = {};
+    const user = computed(() => store.state.user);
 
     const loginModalVisible = ref(false);
     const loginModalLoading = ref(false);
@@ -76,7 +76,9 @@ export default defineComponent({
         if (data.success) {
           loginModalVisible.value = false;
           message.success("Login successful！");
-          user.value = data.content;
+
+          //store/index.ts  全局變量 其他不是header的組件也能用
+          store.commit("setUser",user.value)
         } else {
           message.error(data.message);
         }
