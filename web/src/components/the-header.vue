@@ -8,6 +8,9 @@
         :style="{ lineHeight: '64px' }"
     >
       <a-menu-item key="/"><router-link to="/">Home</router-link></a-menu-item>
+      <a-menu-item key="/admin/user">
+        <router-link to="/admin/user">User Management</router-link>
+      </a-menu-item>
       <a-menu-item key="/admin/ebook"><router-link to="/admin/ebook">Ebook Management</router-link></a-menu-item>
       <a-menu-item key="/admin/category"><router-link to="/admin/category">Category Management</router-link></a-menu-item>
       <a-menu-item key="/about"><router-link to="/about">About Us</router-link></a-menu-item>
