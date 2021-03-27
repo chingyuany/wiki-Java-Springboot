@@ -7,110 +7,139 @@
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
-      <p>
-<!--        inline 排在同一列-->
-        <a-form layout="inline" :model="param">
-<!--          <a-form-item>-->
-<!--            <a-input v-model:value="param.name" placeholder="Name">-->
-<!--            </a-input>-->
-<!--          </a-form-item>-->
-          <a-form-item>
-            <a-button type="primary" @click="handleQuery()">
-              Show All
-            </a-button>
-          </a-form-item>
-          <a-form-item>
-          <a-button type="primary" @click="add()" >
-            New
-          </a-button>
-          </a-form-item>
-        </a-form>
-      </p>
-      <a-table
-          :columns="columns"
-          :row-key="record => record.id"
-          :data-source="level1"
-
-          :loading="loading"
-          :pagination="false"
-      >
-<!--        套用的樣式 customRender -->
-        <template #cover="{ text: cover }">
-          <img v-if="cover" :src="cover" alt="avatar" />
-        </template>
-<!--        record 是一列的數據-->
-        <template v-slot:action="{ text, record }">
-<!--          空格組件-->
-          <a-space size="small">
-            <a-button type="primary" @click="edit(record)">
-              Edit
-            </a-button>
-            <a-popconfirm
-                title="Delete cannot recover. Are you sure delete this row?"
-                ok-text="Yes"
-                cancel-text="No"
-                @confirm="handleDelete(record.id)"
-
-            >
-              <a-button type="danger">
-                Delete
+      <a-row :gutter="24">
+        <a-col :span="8">
+        <p>
+          <!--        inline 排在同一列-->
+          <a-form layout="inline" :model="param">
+            <!--          <a-form-item>-->
+            <!--            <a-input v-model:value="param.name" placeholder="Name">-->
+            <!--            </a-input>-->
+            <!--          </a-form-item>-->
+            <a-form-item>
+              <a-button type="primary" @click="handleQuery()">
+                Show All
               </a-button>
-            </a-popconfirm>
-          </a-space>
-        </template>
-      </a-table>
+            </a-form-item>
+            <a-form-item>
+              <a-button type="primary" @click="add()" >
+                New
+              </a-button>
+            </a-form-item>
+          </a-form>
+        </p>
+<!--          v-if 是說當讀到資料level1後 才去展開a-table(defaultExpandAllRows)-->
+<!--         因為defaultExpandAllRows 是初始就執行 但是還沒讀到level1的資料-->
+        <a-table
+            v-if="level1.length > 0"
+            :columns="columns"
+            :row-key="record => record.id"
+            :data-source="level1"
+
+            :loading="loading"
+            :pagination="false"
+            size="small"
+            :defaultExpandAllRows="true"
+        >
+          <!--        套用的樣式 customRender -->
+
+          <template #name="{ text, record}">
+
+            {{record.sort}}{{text}}
+          </template>
+          <!--        record 是一列的數據-->
+          <template v-slot:action="{ text, record }">
+            <!--          空格組件-->
+            <a-space size="small">
+              <a-button type="primary" @click="edit(record)" size ="small">
+                Edit
+              </a-button>
+              <a-popconfirm
+                  title="Delete cannot recover. Are you sure delete this row?"
+                  ok-text="Yes"
+                  cancel-text="No"
+                  @confirm="handleDelete(record.id)"
+
+              >
+                <a-button type="danger" size ="small">
+                  Delete
+                </a-button>
+              </a-popconfirm>
+            </a-space>
+          </template>
+        </a-table>
+        </a-col>
+        <a-col :span="16">
+
+            <p>
+              <a-form layout="inline" :model="param">
+                <a-form-item>
+                  <a-button type="primary" @click="handleSave()">
+                    Save
+                  </a-button>
+                </a-form-item>
+              </a-form>
+            </p>
+            <a-form :model="doc" layout="vertical">
+
+              <a-form-item>
+                <a-input v-model:value="doc.name" placeholder="Name"/>
+              </a-form-item>
+
+            <a-form-item>
+            <!--          : 後面可以放變量, 沒有冒號 後面就是字串, replace fields 是把原本a-tree-select裡面的欄位名稱換成我們自訂的-->
+            <a-tree-select
+                v-model:value="doc.parent"
+                style="width: 100%"
+                :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+                :tree-data="treeSelectData"
+                placeholder="Please select parent doc"
+                tree-default-expand-all
+
+                :replaceFields ="{title:'name',key:'id',value:'id'}"
+            >
+
+            </a-tree-select>
+
+          </a-form-item>
+<!--            <a-form-item label="Parent Doc">-->
+<!--              <a-select-->
+<!--                  v-model:value="doc.parent"-->
+<!--                  ref="select"-->
+<!--              >-->
+<!--                <a-select-option :value="0">-->
+<!--                  None-->
+<!--                </a-select-option>-->
+<!--                &lt;!&ndash;          循環1級分類 把name顯示   id放到 doc.parent   如果當前文本框分類的id 是目前選項的id 就變灰色不能選  因為選自己會把自己父分類改成自己本身ID&ndash;&gt;-->
+<!--                <a-select-option v-for="c in level1" :key="c.id" :value="c.id" :disabled="doc.id === c.id">-->
+<!--                  &lt;!&ndash;            在Html裡面要使用響應式變量就要用{{}}&ndash;&gt;-->
+<!--                  {{c.name}}-->
+<!--                </a-select-option>-->
+<!--              </a-select>-->
+<!--            </a-form-item>-->
+            <a-form-item >
+              <a-input v-model:value="doc.sort" placeholder="order"/>
+            </a-form-item>
+            <a-form-item >
+              <div id="content">
+
+              </div>
+            </a-form-item>
+          </a-form>
+
+        </a-col>
+      </a-row>
+
     </a-layout-content>
   </a-layout>
-  <a-modal
-      title="Doc Form"
-      v-model:visible="modalVisible"
-      :confirm-loading="modalLoading"
-      @ok="handleModalOk"
-  >
-    <a-form :model="doc" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
-      <a-form-item label="Name">
-        <a-input v-model:value="doc.name" />
-      </a-form-item><a-form-item label="Name">
-      <!--          : 後面可以放變量, 沒有冒號 後面就是字串, replace fields 是把原本a-tree-select裡面的欄位名稱換成我們自訂的-->
-      <a-tree-select
-          v-model:value="doc.parent"
-          style="width: 100%"
-          :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-          :tree-data="treeSelectData"
-          placeholder="Please select parent doc"
-          tree-default-expand-all
+<!--  <a-modal-->
+<!--      title="Doc Form"-->
+<!--      v-model:visible="modalVisible"-->
+<!--      :confirm-loading="modalLoading"-->
+<!--      @ok="handleModalOk"-->
+<!--  >-->
 
-          :replaceFields ="{title:'name',key:'id',value:'id'}"
-      >
-
-      </a-tree-select>
-
-      </a-form-item>
-      <a-form-item label="Parent Doc">
-        <a-select
-            v-model:value="doc.parent"
-            ref="select"
-        >
-          <a-select-option :value="0">
-            None
-          </a-select-option>
-<!--          循環1級分類 把name顯示   id放到 doc.parent   如果當前文本框分類的id 是目前選項的id 就變灰色不能選  因為選自己會把自己父分類改成自己本身ID-->
-          <a-select-option v-for="c in level1" :key="c.id" :value="c.id" :disabled="doc.id === c.id">
-<!--            在Html裡面要使用響應式變量就要用{{}}-->
-            {{c.name}}
-          </a-select-option>
-        </a-select>
-      </a-form-item>
-      <a-form-item label="Sort">
-        <a-input v-model:value="doc.sort" />
-      </a-form-item>
-      <a-form-item label="Content">
-        <div id="content">
-
-        </div>
-      </a-form-item>
-    </a-form>
-  </a-modal>
+<!--  </a-modal>-->
 </template>
 
 <script lang="ts">
@@ -143,17 +172,10 @@ export default defineComponent({
     const columns = [
       {
         title: 'Name',
-        dataIndex: 'name'
+        dataIndex: 'name',
+        slots: { customRender: 'name' }
       },
-      {
-        title: 'Parent Doc',
-        key: 'parent',
-        dataIndex: 'parent'
-      },
-      {
-        title: 'Sort',
-        dataIndex: 'sort'
-      },
+
       {
         title: 'Action',
         key: 'action',
@@ -173,6 +195,8 @@ export default defineComponent({
      */
 
     const level1 = ref(); // 一级分类树，children属性就是二级分类
+    //因為上面table有 v-if 不能null.length, 所以這邊初始空陣列
+    level1.value = [];
     /**
      * 数据查询
      **/
@@ -212,8 +236,9 @@ export default defineComponent({
     const modalVisible = ref(false);
     const modalLoading = ref(false);
     const editor = new E('#content')
-
-    const handleModalOk = () => {
+    //富文本 優先層級原本是500 設成0 才不會擋住其他
+    editor.config.zIndex = 0;
+    const handleSave = () => {
       modalLoading.value = true
       //post 不需要像get一樣寫param
       axios.post("/doc/save", doc.value
@@ -303,10 +328,7 @@ export default defineComponent({
       // 为选择树添加一个"无"  unshift往數組前面添加
       treeSelectData.value.unshift({id: 0, name: 'None'});
 
-      //因為modal create 沒這麼快 所以delay 100ms 在顯示富文本
-      setTimeout(function () {
-                editor.create();
-      }, 100);
+
     };
 
     const add = () => {
@@ -315,10 +337,7 @@ export default defineComponent({
       treeSelectData.value = Tool.copy(level1.value);
       // 为选择树添加一个"无"  unshift往數組前面添加
       treeSelectData.value.unshift({id: 0, name: 'None'});
-      //因為modal create 沒這麼快 所以delay 100ms 在顯示富文本
-      setTimeout(function () {
-        editor.create();
-      }, 100);
+
     };
     //後端long 前端number
     const handleDelete = (id: number) => {
@@ -345,7 +364,7 @@ export default defineComponent({
     //初始化頁面的時候 也是需要先查詢一次 第一頁
     onMounted(() => {
       handleQuery();
-
+      editor.create();
     });
 
     return {
@@ -361,7 +380,7 @@ export default defineComponent({
 
       modalVisible,
       modalLoading,
-      handleModalOk,
+      handleSave,
       doc,
       handleQuery,
       treeSelectData
