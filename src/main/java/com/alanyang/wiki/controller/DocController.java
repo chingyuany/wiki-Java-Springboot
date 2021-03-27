@@ -56,4 +56,14 @@ public class DocController {
         docService.delete(list);
         return resp;
     }
+
+
+    @GetMapping("/find-content/{id}")
+//    @valid  開啟驗證規則 在pagereq 裡面
+    public CommonResp findContent(@PathVariable Long id){
+        CommonResp<String> resp = new CommonResp<>();
+        String content = docService.findContent(id);
+        resp.setContent(content);
+        return resp;
+    }
 }

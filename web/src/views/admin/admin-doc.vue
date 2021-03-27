@@ -228,6 +228,7 @@ export default defineComponent({
     };
 
 
+
     // -------- Edit 表单 ---------
     // 因为树选择组件的属性状态，会随当前编辑的节点而变化，所以单独声明一个响应式变量
     const treeSelectData = ref();
@@ -250,7 +251,7 @@ export default defineComponent({
         //response 是後端傳回來的值
         const data = response.data;
         if (data.success) {
-          modalVisible.value = false;
+           message.success("Save Successful");
 
           //reload form
           handleQuery();
@@ -318,12 +319,29 @@ export default defineComponent({
         }
       }
     };
+    const handleQueryContent = () => {
+
+      axios.get("/doc/find-content/"+doc.value.id).then((response) => {
+        //response 是後端傳回來的值
+        const data = response.data;
+        if (data.success) {
+          //富文本賦值
+          editor.txt.html(data.content)
+        } else {
+          message.error(data.message);
+        }
+
+      });
+    };
     /**
      * 编辑
      */
     const edit = (record: any) => {
+      //清空富文本
+      editor.txt.html("")
       modalVisible.value = true;
       doc.value = Tool.copy(record);
+      handleQueryContent();
       // 不能选择当前节点及其所有子孙节点，作为父节点，会使树断开
       treeSelectData.value = Tool.copy(level1.value);
       setDisable(treeSelectData.value, record.id);
@@ -335,6 +353,8 @@ export default defineComponent({
     };
 
     const add = () => {
+      //清空富文本
+      editor.txt.html("")
       modalVisible.value = true;
       doc.value = {ebookId: route.query.ebookId}
       treeSelectData.value = Tool.copy(level1.value);
@@ -386,7 +406,8 @@ export default defineComponent({
       handleSave,
       doc,
       handleQuery,
-      treeSelectData
+      treeSelectData,
+      handleQueryContent
     }
   }
 });
