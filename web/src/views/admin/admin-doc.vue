@@ -161,6 +161,7 @@ import {Tool} from "@/util/tool";
 import {useRoute} from "vue-router";
 import ExclamationCircleOutlined from "@ant-design/icons-vue/ExclamationCircleOutlined";
 import E from 'wangeditor';
+import i18next from "i18next";
 export default defineComponent({
   name: 'AdminDoc',
   setup: function () {
@@ -254,6 +255,9 @@ export default defineComponent({
     const modalVisible = ref(false);
     const modalLoading = ref(false);
     const editor = new E('#content')
+    //改成英文
+    editor.config.lang = 'en'
+    editor.i18next = i18next
     //富文本 優先層級原本是500 設成0 才不會擋住其他
     editor.config.zIndex = 0;
     const handleSave = () => {
