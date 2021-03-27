@@ -1,10 +1,12 @@
 package com.alanyang.wiki.controller;
 
+import com.alanyang.wiki.req.UserLoginReq;
 import com.alanyang.wiki.req.UserQueryReq;
 import com.alanyang.wiki.req.UserResetPasswordReq;
 import com.alanyang.wiki.req.UserSaveReq;
 import com.alanyang.wiki.resp.CommonResp;
 import com.alanyang.wiki.resp.PageResp;
+import com.alanyang.wiki.resp.UserLoginResp;
 import com.alanyang.wiki.resp.UserQueryResp;
 import com.alanyang.wiki.service.UserService;
 import org.springframework.util.DigestUtils;
@@ -58,6 +60,15 @@ public class UserController {
         req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
         CommonResp resp = new CommonResp<>();
         userService.resetPassword(req);
+        return resp;
+    }
+    @PostMapping("/login")
+    public CommonResp login(@Valid @RequestBody UserLoginReq req){
+//        加密成md5 32bit 16進位字符串hex
+        req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
+        CommonResp<UserLoginResp> resp = new CommonResp<>();
+        UserLoginResp userLoginResp = userService.login(req);
+        resp.setContent(userLoginResp);
         return resp;
     }
 }

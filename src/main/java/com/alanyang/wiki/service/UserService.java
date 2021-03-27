@@ -5,10 +5,12 @@ import com.alanyang.wiki.domain.UserExample;
 import com.alanyang.wiki.exception.BusinessException;
 import com.alanyang.wiki.exception.BusinessExceptionCode;
 import com.alanyang.wiki.mapper.UserMapper;
+import com.alanyang.wiki.req.UserLoginReq;
 import com.alanyang.wiki.req.UserQueryReq;
 import com.alanyang.wiki.req.UserResetPasswordReq;
 import com.alanyang.wiki.req.UserSaveReq;
 import com.alanyang.wiki.resp.PageResp;
+import com.alanyang.wiki.resp.UserLoginResp;
 import com.alanyang.wiki.resp.UserQueryResp;
 import com.alanyang.wiki.util.CopyUtil;
 import com.alanyang.wiki.util.SnowFlake;
@@ -112,5 +114,24 @@ public class UserService {
     public void resetPassword(UserResetPasswordReq req){
         User user = CopyUtil.copy(req,User.class);
         userMapper.updateByPrimaryKeySelective(user);
+    }
+    public UserLoginResp login(UserLoginReq req){
+        User userDb = selectByLoginName(req.getLoginName());
+        if (ObjectUtils.isEmpty(userDb)){
+//            用戶名不存在
+            LOG.info("用户名不存在, {}", req.getLoginName());
+            throw new BusinessException(BusinessExceptionCode.LOGIN_USER_ERROR);
+        }
+        else{
+            if (userDb.getPassword().equals(req.getPassword())){
+//                登入成功
+                UserLoginResp userLoginResp = CopyUtil.copy(userDb,UserLoginResp.class);
+                return userLoginResp;
+            }else{
+//                密碼錯誤
+                LOG.info("密码不对, 输入密码：{}, 数据库密码：{}", req.getPassword(), userDb.getPassword());
+                throw new BusinessException(BusinessExceptionCode.LOGIN_USER_ERROR);
+            }
+        }
     }
 }

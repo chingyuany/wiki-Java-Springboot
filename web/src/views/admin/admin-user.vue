@@ -11,7 +11,7 @@
           </a-form-item>
           <a-form-item>
             <a-button type="primary" @click="handleQuery({page: 1, size: pagination.pageSize})">
-              Query
+              Search
             </a-button>
           </a-form-item>
           <a-form-item>
