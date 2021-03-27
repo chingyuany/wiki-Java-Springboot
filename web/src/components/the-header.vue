@@ -14,7 +14,10 @@
       <a-menu-item key="/admin/ebook"><router-link to="/admin/ebook">Ebook Management</router-link></a-menu-item>
       <a-menu-item key="/admin/category"><router-link to="/admin/category">Category Management</router-link></a-menu-item>
       <a-menu-item key="/about"><router-link to="/about">About Us</router-link></a-menu-item>
-      <a class="login-menu" @click="showLoginModal">
+      <a class="login-menu" v-show="user.id" >
+        <span>Welcome, {{ user.name }}</span>
+      </a>
+      <a class="login-menu" @click="showLoginModal" v-show="!user.id">
         <span>Login</span>
       </a>
     </a-menu>
@@ -47,10 +50,15 @@ declare let KEY: any;
 export default defineComponent({
   name: 'the-header',
   setup () {
+    //用來登入
     const loginUser = ref({
       loginName: "test",
-      password: "test"
+      password: "test1234"
     });
+    //登入後保存的訊息
+    const user = ref();
+    user.value = {};
+
     const loginModalVisible = ref(false);
     const loginModalLoading = ref(false);
     const showLoginModal = () => {
@@ -68,6 +76,7 @@ export default defineComponent({
         if (data.success) {
           loginModalVisible.value = false;
           message.success("Login successful！");
+          user.value = data.content;
         } else {
           message.error(data.message);
         }
@@ -80,7 +89,8 @@ export default defineComponent({
       loginModalLoading,
       showLoginModal,
       loginUser,
-      login
+      login,
+      user
     }
   }
 });

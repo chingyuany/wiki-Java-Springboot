@@ -9,11 +9,18 @@ import com.alanyang.wiki.resp.PageResp;
 import com.alanyang.wiki.resp.UserLoginResp;
 import com.alanyang.wiki.resp.UserQueryResp;
 import com.alanyang.wiki.service.UserService;
+import com.alanyang.wiki.util.SnowFlake;
+import com.alibaba.fastjson.JSONObject;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.concurrent.TimeUnit;
+
 
 //返回字串 or json
 @RestController
@@ -25,6 +32,14 @@ public class UserController {
     @Resource
     private UserService userService;
 
+    @Resource
+    private SnowFlake snowFlake;
+
+    @Resource
+    private RedisTemplate redisTemplate;
+
+
+    private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
     @GetMapping("/list")
 //    @valid  開啟驗證規則 在pagereq 裡面
@@ -68,6 +83,14 @@ public class UserController {
         req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
         CommonResp<UserLoginResp> resp = new CommonResp<>();
         UserLoginResp userLoginResp = userService.login(req);
+
+        Long token = snowFlake.nextId();
+        LOG.info("生成單點登入token: {} 放入redis",token);
+
+        userLoginResp.setToken(token.toString());
+//        ops = operation  set 插入一個set(key,value,有效期限,時間單位)
+//        class要遠程傳輸 需要轉成序列化 才能再還原回來  JSONObject.toJSONString 9-9
+        redisTemplate.opsForValue().set(token, JSONObject.toJSONString(userLoginResp), 3600 * 24, TimeUnit.SECONDS);
         resp.setContent(userLoginResp);
         return resp;
     }
