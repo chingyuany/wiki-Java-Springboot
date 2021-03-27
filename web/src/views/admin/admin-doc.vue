@@ -232,7 +232,8 @@ export default defineComponent({
     // 因为树选择组件的属性状态，会随当前编辑的节点而变化，所以单独声明一个响应式变量
     const treeSelectData = ref();
     treeSelectData.value = [];
-    const doc = ref({});
+    const doc = ref();
+    doc.value = {};
     const modalVisible = ref(false);
     const modalLoading = ref(false);
     const editor = new E('#content')
@@ -240,6 +241,8 @@ export default defineComponent({
     editor.config.zIndex = 0;
     const handleSave = () => {
       modalLoading.value = true
+      //wangeditor 官方頁面的方法
+      doc.value.content = editor.txt.html();
       //post 不需要像get一樣寫param
       axios.post("/doc/save", doc.value
       ).then((response) => {

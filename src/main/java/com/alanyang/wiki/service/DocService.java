@@ -1,7 +1,9 @@
 package com.alanyang.wiki.service;
 
+import com.alanyang.wiki.domain.Content;
 import com.alanyang.wiki.domain.Doc;
 import com.alanyang.wiki.domain.DocExample;
+import com.alanyang.wiki.mapper.ContentMapper;
 import com.alanyang.wiki.mapper.DocMapper;
 import com.alanyang.wiki.req.DocQueryReq;
 import com.alanyang.wiki.req.DocSaveReq;
@@ -25,6 +27,8 @@ public class DocService {
     private static final Logger LOG = LoggerFactory.getLogger(DocService.class);
     @Resource
     private DocMapper docMapper;
+    @Resource
+    private ContentMapper contentMapper;
     @Resource
     private SnowFlake snowFlake;
 
@@ -83,13 +87,25 @@ public class DocService {
 
     public void save(DocSaveReq req){
         Doc doc = CopyUtil.copy(req,Doc.class);
+//        因為doc沒有content屬性 所以這裡要再複製一次
+        Content content = CopyUtil.copy(req, Content.class);
         if (ObjectUtils.isEmpty(req.getId())){
             doc.setId(snowFlake.nextId());
 //            新增紀錄
             docMapper.insert(doc);
+
+            content.setId(doc.getId());
+//            新增紀錄
+            contentMapper.insert(content);
         }else{
 //            更新
             docMapper.updateByPrimaryKey(doc);
+//          blob 富文本字段
+//            有可能之前插入doc資料表得時候  content是空的 所以content表沒有值  那count ==0就要更新
+            int count = contentMapper.updateByPrimaryKeyWithBLOBs(content);
+            if (count == 0){
+                contentMapper.insert(content);
+            }
         }
 
     }
