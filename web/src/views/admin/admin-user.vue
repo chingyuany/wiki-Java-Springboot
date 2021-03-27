@@ -58,7 +58,9 @@
   >
     <a-form :model="user" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
       <a-form-item label="Login name">
-        <a-input v-model:value="user.loginName" />
+<!--       如果用戶名有值 表示在編輯 就要disable, 假設用戶名沒有值 就是在new 可以顯示-->
+<!--        !! 繞過參數型態檢驗  這裡是number 但是 disable 後面是要接布林值-->
+        <a-input v-model:value="user.loginName" :disabled="!!user.id"/>
       </a-form-item>
       <a-form-item label="User name">
         <a-input v-model:value="user.name" />

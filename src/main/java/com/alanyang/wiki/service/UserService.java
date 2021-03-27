@@ -74,6 +74,7 @@ public class UserService {
 
     public void save(UserSaveReq req){
         User user = CopyUtil.copy(req,User.class);
+//        new 的時候
         if (ObjectUtils.isEmpty(req.getId())){
             User userDB = selectByLoginName(req.getLoginName());
             if (ObjectUtils.isEmpty(userDB)) {
@@ -84,9 +85,11 @@ public class UserService {
                 // 用户名已存在
                 throw new BusinessException(BusinessExceptionCode.USER_LOGIN_NAME_EXIST);
             }
+//            edit的時候
         }else{
-//            更新
-            userMapper.updateByPrimaryKey(user);
+            user.setLoginName(null);
+//            selective 是user有值的欄位才會去更新  因為上面把loginname設空了 所以永遠不會去更新login name
+            userMapper.updateByPrimaryKeySelective(user);
         }
 
     }
