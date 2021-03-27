@@ -78,6 +78,9 @@ import axios from 'axios';
 import { message } from 'ant-design-vue';
 import {Tool} from "@/util/tool";
 
+//雖然index.html已經引用md5.js 這裡可以直接用public變量, 但是typescript需要再宣告一下該變量才能用
+declare let hexMd5: any;
+declare let KEY: any;
 export default defineComponent({
   name: 'AdminUser',
   setup() {
@@ -156,6 +159,10 @@ export default defineComponent({
     const modalLoading = ref(false);
     const handleModalOk = () => {
       modalLoading.value = true;
+      //前端先加密 因為只有後端加密 封包可以被攔截
+      //key是鹽值 因為一些常見的密碼 如123的md5值是一樣的 很容易被猜出來, 加個key, 就不容易猜出來
+      user.value.password = hexMd5(user.value.password + KEY);
+
       axios.post("/user/save", user.value).then((response) => {
         modalLoading.value = false;
         const data = response.data; // data = commonResp
