@@ -6,6 +6,7 @@ import com.alanyang.wiki.exception.BusinessException;
 import com.alanyang.wiki.exception.BusinessExceptionCode;
 import com.alanyang.wiki.mapper.UserMapper;
 import com.alanyang.wiki.req.UserQueryReq;
+import com.alanyang.wiki.req.UserResetPasswordReq;
 import com.alanyang.wiki.req.UserSaveReq;
 import com.alanyang.wiki.resp.PageResp;
 import com.alanyang.wiki.resp.UserQueryResp;
@@ -88,6 +89,7 @@ public class UserService {
 //            edit的時候
         }else{
             user.setLoginName(null);
+            user.setPassword(null);
 //            selective 是user有值的欄位才會去更新  因為上面把loginname設空了 所以永遠不會去更新login name
             userMapper.updateByPrimaryKeySelective(user);
         }
@@ -106,5 +108,9 @@ public class UserService {
         } else {
             return userList.get(0);
         }
+    }
+    public void resetPassword(UserResetPasswordReq req){
+        User user = CopyUtil.copy(req,User.class);
+        userMapper.updateByPrimaryKeySelective(user);
     }
 }

@@ -34,6 +34,9 @@
             <a-button type="primary" @click="edit(record)">
               Edit
             </a-button>
+            <a-button type="primary" @click="resetPassword(record)">
+              ResetPassword
+            </a-button>
             <a-popconfirm
                 title="Delete cannot recover, confirm delete?"
                 ok-text="Yes"
@@ -59,13 +62,28 @@
     <a-form :model="user" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
       <a-form-item label="Login name">
 <!--       如果用戶名有值 表示在編輯 就要disable, 假設用戶名沒有值 就是在new 可以顯示-->
-<!--        !! 繞過參數型態檢驗  這裡是number 但是 disable 後面是要接布林值-->
+<!--        這裡是number 但是 disable 後面是要接布林值   !! 把它變成布林值繞過參數型態檢驗  -->
         <a-input v-model:value="user.loginName" :disabled="!!user.id"/>
       </a-form-item>
       <a-form-item label="User name">
         <a-input v-model:value="user.name" />
       </a-form-item>
-      <a-form-item label="Password">
+<!--      因為編輯的時候 不能改密碼 不要顯示-->
+<!--      v-show是動態顯示  v-if 是直接刪掉元素 適用於初始就判斷顯不顯示 -->
+      <a-form-item label="Password"  v-show="!user.id">
+        <a-input v-model:value="user.password" />
+      </a-form-item>
+    </a-form>
+  </a-modal>
+
+  <a-modal
+      title="Reset password"
+      v-model:visible="resetModalVisible"
+      :confirm-loading="resetModalLoading"
+      @ok="handleResetModalOk"
+  >
+    <a-form :model="user" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+      <a-form-item label="New Password">
         <a-input v-model:value="user.password" />
       </a-form-item>
     </a-form>
@@ -208,6 +226,42 @@ export default defineComponent({
         }
       });
     };
+// -------- reset password 表單---------
+
+    const resetModalVisible = ref(false);
+    const resetModalLoading = ref(false);
+    const handleResetModalOk = () => {
+      resetModalLoading.value = true;
+      //前端先加密 因為只有後端加密 封包可以被攔截
+      //key是鹽值 因為一些常見的密碼 如123的md5值是一樣的 很容易被猜出來, 加個key, 就不容易猜出來
+      user.value.password = hexMd5(user.value.password + KEY);
+
+      axios.post("/user/reset-password", user.value).then((response) => {
+        resetModalLoading.value = false;
+        const data = response.data; // data = commonResp
+        if (data.success) {
+          resetModalVisible.value = false;
+
+          // 重新加载列表
+          handleQuery({
+            page: pagination.value.current,
+            size: pagination.value.pageSize,
+          });
+        } else {
+          message.error(data.message);
+        }
+      });
+    };
+
+    /**
+     * 编辑
+     */
+    const resetPassword = (record: any) => {
+      resetModalVisible.value = true;
+      user.value = Tool.copy(record);
+      //因為要清空password框
+      user.value.password = null;
+    };
 
     onMounted(() => {
       handleQuery({
@@ -233,7 +287,11 @@ export default defineComponent({
       modalLoading,
       handleModalOk,
 
-      handleDelete
+      handleDelete,
+      resetPassword,
+      resetModalVisible,
+      resetModalLoading,
+      handleResetModalOk,
     }
   }
 });

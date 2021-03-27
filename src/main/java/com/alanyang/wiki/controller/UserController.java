@@ -1,6 +1,7 @@
 package com.alanyang.wiki.controller;
 
 import com.alanyang.wiki.req.UserQueryReq;
+import com.alanyang.wiki.req.UserResetPasswordReq;
 import com.alanyang.wiki.req.UserSaveReq;
 import com.alanyang.wiki.resp.CommonResp;
 import com.alanyang.wiki.resp.PageResp;
@@ -46,6 +47,17 @@ public class UserController {
     public CommonResp delete(@PathVariable Long id){
         CommonResp resp = new CommonResp<>();
         userService.delete(id);
+        return resp;
+    }
+
+    @PostMapping("/reset-password")
+//    commonresp 回傳True而已 new出來一定是true
+//    如果是Json格式post 一定要加上@RequestBody,如果是form post 就不需要
+    public CommonResp resetPassword(@Valid @RequestBody UserResetPasswordReq req){
+//        加密成md5 32bit 16進位字符串hex
+        req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
+        CommonResp resp = new CommonResp<>();
+        userService.resetPassword(req);
         return resp;
     }
 }
