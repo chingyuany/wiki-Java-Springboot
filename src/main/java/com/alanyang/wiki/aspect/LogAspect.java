@@ -53,7 +53,7 @@ public class LogAspect {
         LOG.info("Request address: {} {}", request.getRequestURL().toString(), request.getMethod());
         LOG.info("Class name method: {}.{}", signature.getDeclaringTypeName(), name);
         LOG.info("Remote address: {}", request.getRemoteAddr());
-//RequestContext 在util folder 工具類,  getremote ip 在下面 因為之後用nginx 反向代理 需要特別處理
+        //RequestContext 在util folder 工具類,  getremote ip 在下面 因為之後用nginx 反向代理 需要特別處理
         RequestContext.setRemoteAddr(getRemoteIp(request));
 
         // 打印请求参数

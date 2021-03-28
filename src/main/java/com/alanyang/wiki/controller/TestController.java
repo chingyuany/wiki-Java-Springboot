@@ -53,8 +53,14 @@ public class TestController {
     }
 
     @RequestMapping("/redis/get/{key}")
-    public Object get(@PathVariable Long key) {
+    public Object get(@PathVariable String key) {
         Object object = redisTemplate.opsForValue().get(key);
+        LOG.info("key: {}, value: {}", key, object);
+        return object;
+    }
+    @RequestMapping("/redis/delete/{key}")
+    public Object delete(@PathVariable String key) {
+        Object object = redisTemplate.delete(key);;
         LOG.info("key: {}, value: {}", key, object);
         return object;
     }
