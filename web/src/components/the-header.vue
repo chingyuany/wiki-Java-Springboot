@@ -8,11 +8,12 @@
         :style="{ lineHeight: '64px' }"
     >
       <a-menu-item key="/"><router-link to="/">Home</router-link></a-menu-item>
-      <a-menu-item key="/admin/user">
+<!--      v-show 還是會有預留空間 所以自己寫Css  user.id有值得話 甚麼都不用做 沒有值 就要隱藏-->
+      <a-menu-item key="/admin/user"  :style="user.id?{}:{display:'none'}">
         <router-link to="/admin/user">User Management</router-link>
       </a-menu-item>
-      <a-menu-item key="/admin/ebook"><router-link to="/admin/ebook">Ebook Management</router-link></a-menu-item>
-      <a-menu-item key="/admin/category"><router-link to="/admin/category">Category Management</router-link></a-menu-item>
+      <a-menu-item key="/admin/ebook"  :style="user.id?{}:{display:'none'}"><router-link to="/admin/ebook">Ebook Management</router-link></a-menu-item>
+      <a-menu-item key="/admin/category" :style="user.id?{}:{display:'none'}"><router-link to="/admin/category" >Category Management</router-link></a-menu-item>
       <a-menu-item key="/about"><router-link to="/about">About Us</router-link></a-menu-item>
 
 <!--      login-menu 下面有Css float 右邊-->
