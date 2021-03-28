@@ -14,11 +14,23 @@
       <a-menu-item key="/admin/ebook"><router-link to="/admin/ebook">Ebook Management</router-link></a-menu-item>
       <a-menu-item key="/admin/category"><router-link to="/admin/category">Category Management</router-link></a-menu-item>
       <a-menu-item key="/about"><router-link to="/about">About Us</router-link></a-menu-item>
-      <a class="login-menu" v-show="user.id" >
-        <span>Welcome, {{ user.name }}</span>
-      </a>
+
+<!--      login-menu 下面有Css float 右邊-->
       <a class="login-menu" @click="showLoginModal" v-show="!user.id">
         <span>Login</span>
+      </a>
+      <a-popconfirm
+          title="Confirm logout?"
+          ok-text="Yes"
+          cancel-text="No"
+          @confirm="logout()"
+      >
+        <a class="login-menu" v-show="user.id">
+          <span>Logout</span>
+        </a>
+      </a-popconfirm>
+      <a class="login-menu" v-show="user.id" >
+        <span>Welcome, {{ user.name }}</span>
       </a>
     </a-menu>
     <a-modal
@@ -56,7 +68,7 @@ export default defineComponent({
       loginName: "test",
       password: "test1234"
     });
-    //登入後保存的訊息
+    //取出登入後保存的訊息  下面要先login commit setUser 這裡才會有值
     const user = computed(() => store.state.user);
 
     const loginModalVisible = ref(false);
@@ -77,8 +89,27 @@ export default defineComponent({
           loginModalVisible.value = false;
           message.success("Login successful！");
 
+
           //store/index.ts  全局變量 其他不是header的組件也能用
-          store.commit("setUser",user.value)
+          store.commit("setUser",data.content)
+        } else {
+          message.error(data.message);
+        }
+      });
+    };
+// logout
+    const logout = () => {
+        console.log("Start logout");
+        //叫後端刪除redis
+        axios.get('/user/logout/'+ user.value.token).then((response) => {
+
+        const data = response.data;
+        if (data.success) {
+
+          message.success("Logout successful！");
+
+          //store/index.ts  全局變量 其他不是header的組件也能用
+          store.commit("setUser", {})
         } else {
           message.error(data.message);
         }
@@ -92,7 +123,8 @@ export default defineComponent({
       showLoginModal,
       loginUser,
       login,
-      user
+      user,
+      logout
     }
   }
 });
@@ -101,5 +133,6 @@ export default defineComponent({
 .login-menu {
   float: right;
   color: white;
+  padding-left: 10px;
 }
 </style>
