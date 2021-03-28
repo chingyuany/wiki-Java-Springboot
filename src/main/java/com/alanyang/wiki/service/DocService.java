@@ -5,6 +5,7 @@ import com.alanyang.wiki.domain.Doc;
 import com.alanyang.wiki.domain.DocExample;
 import com.alanyang.wiki.mapper.ContentMapper;
 import com.alanyang.wiki.mapper.DocMapper;
+import com.alanyang.wiki.mapper.DocMapperCust;
 import com.alanyang.wiki.req.DocQueryReq;
 import com.alanyang.wiki.req.DocSaveReq;
 import com.alanyang.wiki.resp.DocQueryResp;
@@ -27,6 +28,10 @@ public class DocService {
     private static final Logger LOG = LoggerFactory.getLogger(DocService.class);
     @Resource
     private DocMapper docMapper;
+
+    @Resource
+    private DocMapperCust docMapperCust;
+
     @Resource
     private ContentMapper contentMapper;
     @Resource
@@ -92,6 +97,8 @@ public class DocService {
         Content content = CopyUtil.copy(req, Content.class);
         if (ObjectUtils.isEmpty(req.getId())){
             doc.setId(snowFlake.nextId());
+            doc.setViewCount(0);
+            doc.setVoteCount(0);
 //            新增紀錄
             docMapper.insert(doc);
 
@@ -123,7 +130,8 @@ public class DocService {
     }
     public String findContent(Long id){
         Content content = contentMapper.selectByPrimaryKey(id);
-
+//        文檔閱讀數+1
+        docMapperCust.increaseViewCount(id);
         if (ObjectUtils.isEmpty(content)) {
             return "";
         } else {

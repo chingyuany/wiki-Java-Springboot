@@ -15,6 +15,14 @@
           </a-tree>
         </a-col>
         <a-col :span="18">
+          <div>
+            <h2>{{doc.name}}</h2>
+            <div>
+              <span>Read：{{doc.viewCount}}</span> &nbsp; &nbsp;
+              <span>Like：{{doc.voteCount}}</span>
+            </div>
+            <a-divider style="height: 2px; background-color: #9999cc"/>
+          </div>
           <div class="wangeditor"  :innerHTML="html"></div>
         </a-col>
       </a-row>
@@ -39,6 +47,9 @@ export default defineComponent({
     defaultSelectedKeys.value = [];
     const level1 = ref(); // 一级文档树，children属性就是二级文档
     level1.value = [];
+    // 当前选中的文档
+    const doc = ref();
+    doc.value = {};
     /**
      * 内容查询
      **/
@@ -68,6 +79,8 @@ export default defineComponent({
             //預設選第一個doc去顯示在頁面
             defaultSelectedKeys.value = [level1.value[0].id];
             handleQueryContent(level1.value[0].id);
+            // 初始显示文档信息
+            doc.value = level1.value[0];
           }
         } else {
           message.error(data.message);
@@ -80,6 +93,8 @@ export default defineComponent({
     const onSelect = (selectedKeys: any, info: any) => {
       console.log('selected', selectedKeys, info);
       if (Tool.isNotEmpty(selectedKeys)) {
+        // 选中某一节点时，加载该节点的文档信息
+        doc.value = info.selectedNodes[0].props;
         // 加载内容  因為selectedKeys 是一個數組 但我們只選一個
         handleQueryContent(selectedKeys[0]);
       }
@@ -93,7 +108,8 @@ export default defineComponent({
       level1,
       html,
       onSelect,
-      defaultSelectedKeys
+      defaultSelectedKeys,
+      doc
     }
   }
 });
