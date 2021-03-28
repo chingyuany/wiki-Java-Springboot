@@ -90,7 +90,7 @@ public class UserController {
         userLoginResp.setToken(token.toString());
 //        ops = operation  set 插入一個set(key,value,有效期限,時間單位)
 //        class要遠程傳輸 需要轉成序列化 才能再還原回來  JSONObject.toJSONString 9-9
-        redisTemplate.opsForValue().set(token, JSONObject.toJSONString(userLoginResp), 3600 * 24, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(token.toString(), JSONObject.toJSONString(userLoginResp), 3600 * 24, TimeUnit.SECONDS);
         resp.setContent(userLoginResp);
         return resp;
     }
