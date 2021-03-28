@@ -4,7 +4,7 @@ public enum BusinessExceptionCode {
 
     USER_LOGIN_NAME_EXIST("Login name already exists"),
     LOGIN_USER_ERROR("Login name not exist or password error"),
-    VOTE_REPEAT("You already clicked like button"),
+    VOTE_REPEAT("You already Like this doc before"),
     ;
 
     private String desc;

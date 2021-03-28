@@ -3,6 +3,8 @@ package com.alanyang.wiki.service;
 import com.alanyang.wiki.domain.Content;
 import com.alanyang.wiki.domain.Doc;
 import com.alanyang.wiki.domain.DocExample;
+import com.alanyang.wiki.exception.BusinessException;
+import com.alanyang.wiki.exception.BusinessExceptionCode;
 import com.alanyang.wiki.mapper.ContentMapper;
 import com.alanyang.wiki.mapper.DocMapper;
 import com.alanyang.wiki.mapper.DocMapperCust;
@@ -11,6 +13,8 @@ import com.alanyang.wiki.req.DocSaveReq;
 import com.alanyang.wiki.resp.DocQueryResp;
 import com.alanyang.wiki.resp.PageResp;
 import com.alanyang.wiki.util.CopyUtil;
+import com.alanyang.wiki.util.RedisUtil;
+import com.alanyang.wiki.util.RequestContext;
 import com.alanyang.wiki.util.SnowFlake;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -36,6 +40,8 @@ public class DocService {
     private ContentMapper contentMapper;
     @Resource
     private SnowFlake snowFlake;
+    @Resource
+    public RedisUtil redisUtil;
 
     public PageResp<DocQueryResp> list(DocQueryReq req){
 
@@ -136,6 +142,16 @@ public class DocService {
             return "";
         } else {
             return content.getContent();
+        }
+    }
+    public void vote(Long id){
+//        都在util folder
+        // 远程IP+doc.id作为key，24小时内不能重复
+        String ip = RequestContext.getRemoteAddr();
+        if (redisUtil.validateRepeat("DOC_VOTE_" + id + "_" + ip, 3600 * 24)) {
+            docMapperCust.increaseVoteCount(id);
+        } else {
+            throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
         }
     }
 }

@@ -6,5 +6,9 @@
 -- 用$ 有被注入的風險 所以用#
         update doc set view_count = view_count + 1 where id = #{id}
     </update>
+    <update id="increaseVoteCount">
+-- 用$ 有被注入的風險 所以用#
+        update doc set vote_count = vote_count + 1 where id = #{id}
+    </update>
 
 </mapper>

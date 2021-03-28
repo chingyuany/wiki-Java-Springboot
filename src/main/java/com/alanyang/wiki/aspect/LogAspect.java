@@ -1,5 +1,6 @@
 package com.alanyang.wiki.aspect;
 
+import com.alanyang.wiki.util.RequestContext;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.support.spring.PropertyPreFilters;
 import org.aspectj.lang.JoinPoint;
@@ -52,8 +53,8 @@ public class LogAspect {
         LOG.info("Request address: {} {}", request.getRequestURL().toString(), request.getMethod());
         LOG.info("Class name method: {}.{}", signature.getDeclaringTypeName(), name);
         LOG.info("Remote address: {}", request.getRemoteAddr());
-
-//        RequestContext.setRemoteAddr(getRemoteIp(request));
+//RequestContext 在util folder 工具類,  getremote ip 在下面 因為之後用nginx 反向代理 需要特別處理
+        RequestContext.setRemoteAddr(getRemoteIp(request));
 
         // 打印请求参数
         Object[] args = joinPoint.getArgs();
