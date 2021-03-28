@@ -8,69 +8,79 @@
           @click="handleClick"
       >
         <a-menu-item key="welcome">
-            <MailOutlined />
-            <span>Welcome!</span>
+          <MailOutlined/>
+          <span>Welcome!</span>
         </a-menu-item>
         <a-sub-menu v-for="item in level1" :key="item.id">
           <template v-slot:title>
-            <span><user-outlined />{{item.name}}</span>
+            <span><user-outlined/>{{ item.name }}</span>
           </template>
           <a-menu-item v-for="child in item.children" :key="child.id">
-            <MailOutlined /><span>{{child.name}}</span>
+            <MailOutlined/>
+            <span>{{ child.name }}</span>
           </a-menu-item>
         </a-sub-menu>
 
       </a-menu>
     </a-layout-sider>
-<!--    <a-layout style="padding: 0 24px 24px">-->
-      <a-layout-content
-          :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
-      >
-<!--        顯示歡迎頁面 或下面的list-->
-        <div class="welcome" v-show="isShowWelcome">
-          <h1>Welcome to Alan's Wiki!</h1>
-        </div>
-<!--下面是ant design vue 裡面的list代碼 https://2x.antdv.com/components/list-cn-->
-<!--        gutter 200px 間距 -->
-          <a-list v-show="!isShowWelcome" item-layout="vertical" size="large" :grid="{ gutter: 20, column: 3 }"  :data-source="ebooks">
+    <!--    <a-layout style="padding: 0 24px 24px">-->
+    <a-layout-content
+        :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
+    >
+      <!--        顯示歡迎頁面 或下面的list-->
+      <div class="welcome" v-show="isShowWelcome">
+        <h1>Welcome to Alan's Wiki!</h1>
+      </div>
+      <!--下面是ant design vue 裡面的list代碼 https://2x.antdv.com/components/list-cn-->
+      <!--        gutter 200px 間距 -->
+      <a-list v-show="!isShowWelcome" item-layout="vertical" size="large" :grid="{ gutter: 20, column: 3 }"
+              :data-source="ebooks">
 
-            <template #renderItem="{ item }">
-              <a-list-item key="item.name">
-                <template #actions>
-          <span v-for="{ type, text } in actions" :key="type">
-            <component v-bind:is="type" style="margin-right: 8px" />
-            {{ text }}
-          </span>
-                </template>
-
-                <a-list-item-meta :description="item.description">
-                  <template #title>
-                    <router-link :to="'/doc?ebookId=' + item.id">
-                      {{ item.name }}
-                    </router-link>
-                  </template>
-                  <template #avatar><a-avatar :src="item.cover" /></template>
-                </a-list-item-meta>
-
-              </a-list-item>
+        <template #renderItem="{ item }">
+          <a-list-item key="item.name">
+            <template #actions>
+               <span>
+                <component v-bind:is="'FileOutlined'" style="margin-right: 8px"/>
+                {{ item.docCount }}
+              </span>
+              <span>
+                <component v-bind:is="'UserOutlined'" style="margin-right: 8px"/>
+                {{ item.viewCount }}
+              </span>
+              <span>
+                <component v-bind:is="'LikeOutlined'" style="margin-right: 8px"/>
+                {{ item.voteCount }}
+              </span>
             </template>
-          </a-list>
 
-<!--ant design view的list 模板代碼-->
+            <a-list-item-meta :description="item.description">
+              <template #title>
+                <router-link :to="'/doc?ebookId=' + item.id">
+                  {{ item.name }}
+                </router-link>
+              </template>
+              <template #avatar>
+                <a-avatar :src="item.cover"/>
+              </template>
+            </a-list-item-meta>
+
+          </a-list-item>
+        </template>
+      </a-list>
+
+      <!--ant design view的list 模板代碼-->
 
 
-
-      </a-layout-content>
-<!--    </a-layout>-->
+    </a-layout-content>
+    <!--    </a-layout>-->
   </a-layout>
 </template>
 
 
-
 <script lang="ts">
-import { defineComponent,onMounted,ref,reactive,toRef } from 'vue';
+import {defineComponent, onMounted, ref, reactive, toRef} from 'vue';
 import axios from 'axios';
-import { message } from 'ant-design-vue';
+import {message} from 'ant-design-vue';
 import {Tool} from "@/util/tool";
 
 // ant design view的list 模板代碼
@@ -90,14 +100,14 @@ import {Tool} from "@/util/tool";
 export default defineComponent({
   name: 'Home',
   //包含vue2的 data(各種變量), mounted and methods
-  setup(){
+  setup() {
     console.log("setup");
     //ref響應式數據 更改js的值 會時時更新
     const ebooks = ref();
     //books自己取的 因為一定要放到一個屬性裡面
     // const ebooksR = reactive({books:[]});
 
-    const level1 =  ref();
+    const level1 = ref();
     let categorys: any;
     /**
      * 查询所有分类
@@ -152,12 +162,12 @@ export default defineComponent({
 
 
     //onMounted 頁面渲染完和組件都加載完後的生命週期函數, 可以避免頁面還沒載完 就去執行函數
-    onMounted(()=>{
+    onMounted(() => {
       handleQueryCategory();
     });
 
 
-    return{
+    return {
       //下面是ref的方法回傳
       ebooks,
       //reactive的方法回傳  最前面的ebooks是自己定義的變量 toRef是把所有屬性變成響應式變量   第一個參數是reactive的 const 變數, 第二個是裡面的屬性,
@@ -166,17 +176,13 @@ export default defineComponent({
       // 測試數據 ant design view的list 模板代碼
       // listData,
 
-      pagination : {
+      pagination: {
         onChange: (page: number) => {
           console.log(page);
         },
         pageSize: 3,
       },
-      actions:  [
-      { type: 'StarOutlined', text: '156' },
-      { type: 'LikeOutlined', text: '156' },
-      { type: 'MessageOutlined', text: '2' },
-    ],
+
       handleClick,
       level1,
       isShowWelcome
