@@ -114,11 +114,11 @@ export default defineComponent({
         title: 'Name',
         dataIndex: 'name'
       },
-      {
-        title: 'Parent Category',
-        key: 'parent',
-        dataIndex: 'parent'
-      },
+      // {
+      //   title: 'Parent Category',
+      //   key: 'parent',
+      //   dataIndex: 'parent'
+      // },
       {
         title: 'Sort',
         dataIndex: 'sort'
