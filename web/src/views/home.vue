@@ -29,7 +29,8 @@
     >
       <!--        顯示歡迎頁面 或下面的list-->
       <div class="welcome" v-show="isShowWelcome">
-        <h1>Welcome to Alan's Wiki!</h1>
+         <the-welcome></the-welcome>
+
       </div>
       <!--下面是ant design vue 裡面的list代碼 https://2x.antdv.com/components/list-cn-->
       <!--        gutter 200px 間距 -->
@@ -82,7 +83,7 @@ import {defineComponent, onMounted, ref, reactive, toRef} from 'vue';
 import axios from 'axios';
 import {message} from 'ant-design-vue';
 import {Tool} from "@/util/tool";
-
+import TheWelcome from '@/components/the-welcome.vue';
 // ant design view的list 模板代碼
 // const listData: any = [];
 // for (let i = 0; i < 23; i++) {
@@ -99,6 +100,9 @@ import {Tool} from "@/util/tool";
 
 export default defineComponent({
   name: 'Home',
+  components: {
+    TheWelcome
+  },
   //包含vue2的 data(各種變量), mounted and methods
   setup() {
     console.log("setup");
