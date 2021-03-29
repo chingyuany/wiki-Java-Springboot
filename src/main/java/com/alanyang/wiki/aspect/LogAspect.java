@@ -43,7 +43,7 @@ public class LogAspect {
     @Before("controllerPointcut()")
     public void doBefore(JoinPoint joinPoint) throws Throwable {
 
-        // 增加日志流水号
+        // 增加日志流水号  MDC 內建函數 放到 logback-spring.xml
         MDC.put("LOG_ID", String.valueOf(snowFlake.nextId()));
 
         // 开始打印请求日志
