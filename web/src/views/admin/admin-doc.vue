@@ -233,7 +233,7 @@ export default defineComponent({
           level1.value = Tool.array2Tree(docs.value, 0);
           console.log("Tree data：", level1);
           // 父文档下拉框初始化，相当于点击新增
-          treeSelectData.value = Tool.copy(level1.value);
+          treeSelectData.value = Tool.copy(level1.value) || [];
           // 为选择树添加一个"无"
           treeSelectData.value.unshift({id: 0, name: 'None'});
 
@@ -363,7 +363,7 @@ export default defineComponent({
       doc.value = Tool.copy(record);
       handleQueryContent();
       // 不能选择当前节点及其所有子孙节点，作为父节点，会使树断开
-      treeSelectData.value = Tool.copy(level1.value);
+      treeSelectData.value = Tool.copy(level1.value) ;
       setDisable(treeSelectData.value, record.id);
 
       // 为选择树添加一个"无"  unshift往數組前面添加
@@ -377,7 +377,7 @@ export default defineComponent({
       editor.txt.html("")
       modalVisible.value = true;
       doc.value = {ebookId: route.query.ebookId}
-      treeSelectData.value = Tool.copy(level1.value);
+      treeSelectData.value = Tool.copy(level1.value)|| [];
       // 为选择树添加一个"无"  unshift往數組前面添加
       treeSelectData.value.unshift({id: 0, name: 'None'});
 
