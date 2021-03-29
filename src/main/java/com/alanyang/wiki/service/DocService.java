@@ -16,12 +16,13 @@ import com.alanyang.wiki.util.CopyUtil;
 import com.alanyang.wiki.util.RedisUtil;
 import com.alanyang.wiki.util.RequestContext;
 import com.alanyang.wiki.util.SnowFlake;
-import com.alanyang.wiki.websocket.WebSocketServer;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
@@ -43,8 +44,9 @@ public class DocService {
     private SnowFlake snowFlake;
     @Resource
     public RedisUtil redisUtil;
+
     @Resource
-    public WebSocketServer webSocketServer;
+    public WsService wsService;
 
     public PageResp<DocQueryResp> list(DocQueryReq req){
 
@@ -99,7 +101,9 @@ public class DocService {
 
         return list;
     }
-
+//    加上事務Transactional, 這註解和Async一樣,需要從其他class調用這個方法才會生效
+//    當有二個SQL 在執行的時候 最好加上事務, 要就同時成功  有一個失敗就會二個都失敗 才能保持數據正確性
+    @Transactional
     public void save(DocSaveReq req){
         Doc doc = CopyUtil.copy(req,Doc.class);
 //        因為doc沒有content屬性 所以這裡要再複製一次
@@ -158,7 +162,8 @@ public class DocService {
         }
 //        推送通知
         Doc docDb = docMapper.selectByPrimaryKey(id);
-        webSocketServer.sendInfo("["+docDb.getName()+"] Liked!");
+        String logId = MDC.get("LOG_ID");
+        wsService.sendInfo("["+docDb.getName()+"] Liked!",logId);
     }
     public void updateEbookInfo(){
         docMapperCust.updateEbookInfo();
