@@ -16,6 +16,7 @@ import com.alanyang.wiki.util.CopyUtil;
 import com.alanyang.wiki.util.RedisUtil;
 import com.alanyang.wiki.util.RequestContext;
 import com.alanyang.wiki.util.SnowFlake;
+import com.alanyang.wiki.websocket.WebSocketServer;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
@@ -42,6 +43,8 @@ public class DocService {
     private SnowFlake snowFlake;
     @Resource
     public RedisUtil redisUtil;
+    @Resource
+    public WebSocketServer webSocketServer;
 
     public PageResp<DocQueryResp> list(DocQueryReq req){
 
@@ -153,6 +156,9 @@ public class DocService {
         } else {
             throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
         }
+//        推送通知
+        Doc docDb = docMapper.selectByPrimaryKey(id);
+        webSocketServer.sendInfo("["+docDb.getName()+"] Liked!");
     }
     public void updateEbookInfo(){
         docMapperCust.updateEbookInfo();

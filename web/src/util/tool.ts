@@ -53,12 +53,12 @@ export class Tool {
     return result;
   }
   /**
-   * 随机生成[len]长度的[radix]进制数
+   * 随机生成[len]长度的[radix]进制数   //62 所有的大小寫字母+數字共62個
    * @param len
    * @param radix 默认62
    * @returns {string}
    */
-  //62 所有的大小寫字母+數字共62個
+
   public static uuid (len: number, radix = 62) {
     const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
     const uuid = [];
