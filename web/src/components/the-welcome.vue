@@ -72,7 +72,7 @@
             </a-col>
             <a-col :span="12">
               <a-statistic
-                  title="Today Predict Read increasing rate"
+                  title="Today Predict Read Increasing Rate"
                   :value="statistic.todayViewIncreaseRateAbs"
                   :precision="2"
                   suffix="%"
@@ -89,12 +89,19 @@
         </a-card>
       </a-col>
     </a-row>
+    <br>
+    <a-row>
+      <a-col :span="24">
+        <div id="main" style="width: 100%;height:300px;"></div>
+      </a-col>
+    </a-row>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent,ref, onMounted } from 'vue';
 import axios from 'axios';
+declare let echarts: any;
 
 export default defineComponent({
   name: 'the-welcome',
@@ -126,8 +133,89 @@ export default defineComponent({
         }
       });
     };
+    const init30DayEcharts = (list: any) => {
+      // 基于准备好的dom，初始化echarts实例
+      const myChart = echarts.init(document.getElementById('main'));
+
+      const xAxis = [];
+      const seriesView = [];
+      const seriesVote = [];
+      for (let i = 0; i < list.length; i++) {
+        const record = list[i];
+        xAxis.push(record.date);
+        seriesView.push(record.viewIncrease);
+        seriesVote.push(record.voteIncrease);
+      }
+
+      // 指定图表的配置项和数据
+      const option = {
+        title: {
+          text: '30 Day tendency chart'
+        },
+        //提示框组件。'axis' 坐标轴触发，主要在柱状图，折线图等会使用类目轴的图表中使用。
+        tooltip: {
+          trigger: 'axis'
+        },
+        legend: {
+          data: ['Total Read Amount', 'Total Like Amount']
+        },
+        grid: {
+          left: '1%',
+          right: '3%',
+          bottom: '3%',
+          containLabel: true
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {}
+          }
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: xAxis
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [
+          {
+            name: 'Total Read Amount',
+            type: 'line',
+            // stack: '总量', 不堆叠
+            data: seriesView,
+            smooth: true
+          },
+          {
+            name: 'Total Like Amount',
+            type: 'line',
+            // stack: '总量', 不堆叠
+            data: seriesVote,
+            smooth: true
+          }
+        ]
+      };
+
+      // 使用刚指定的配置项和数据显示图表。
+      myChart.setOption(option);
+    };
+
+    const get30DayStatistic = () => {
+      axios.get('/ebook-snapshot/get-30-statistic').then((response) => {
+        const data = response.data;
+        if (data.success) {
+          const statisticList = data.content;
+
+          init30DayEcharts(statisticList)
+        }
+      });
+    };
+
+
     onMounted(() => {
       getStatistic();
+      get30DayStatistic();
+
     });
     return {
       statistic
