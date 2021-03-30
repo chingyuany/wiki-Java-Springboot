@@ -26,11 +26,20 @@
           </a-form-item>
         </a-form>
       </p>
+      <p>
+        <a-alert
+            class="tip"
+            message="Reminder: Categories here will show at side bar of home page"
+            type="info"
+            closable
+        />
+      </p>
       <a-table
           :columns="columns"
           :row-key="record => record.id"
           :data-source="level1"
-
+          v-if="level1.length > 0"
+          :defaultExpandAllRows="true"
           :loading="loading"
           :pagination="false"
       >
@@ -142,6 +151,7 @@ export default defineComponent({
      */
 
     const level1 = ref(); // 一级分类树，children属性就是二级分类
+    level1.value = [];
     /**
      * 数据查询
      **/

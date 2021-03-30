@@ -1,9 +1,10 @@
 <template>
   <a-layout>
     <a-layout-sider width="200" style="background: #fff">
+<!--      openkeys 要展開的節點-->
       <a-menu
           mode="inline"
-
+          :openKeys="openKeys"
           :style="{ height: '100%', borderRight: 0 }"
           @click="handleClick"
       >
@@ -11,7 +12,7 @@
           <MailOutlined/>
           <span>Welcome!</span>
         </a-menu-item>
-        <a-sub-menu v-for="item in level1" :key="item.id">
+        <a-sub-menu v-for="item in level1" :key="item.id" :disabled="true">
           <template v-slot:title>
             <span><user-outlined/>{{ item.name }}</span>
           </template>
@@ -110,7 +111,7 @@ export default defineComponent({
     const ebooks = ref();
     //books自己取的 因為一定要放到一個屬性裡面
     // const ebooksR = reactive({books:[]});
-
+    const openKeys =  ref();
     const level1 = ref();
     let categorys: any;
     /**
@@ -121,11 +122,15 @@ export default defineComponent({
         const data = response.data;
         if (data.success) {
           categorys = data.content;
-          console.log("原始数组：", categorys);
-
+          console.log("original data array：", categorys);
+          // 加载完分类后，将侧边栏全部展开
+          openKeys.value = [];
+          for (let i = 0; i < categorys.length; i++) {
+            openKeys.value.push(categorys[i].id)
+          }
           level1.value = [];
           level1.value = Tool.array2Tree(categorys, 0);
-          console.log("树形结构：", level1.value);
+          console.log("tree data array：", level1.value);
         } else {
           message.error(data.message);
         }
@@ -189,7 +194,8 @@ export default defineComponent({
 
       handleClick,
       level1,
-      isShowWelcome
+      isShowWelcome,
+      openKeys
     }
   }
 

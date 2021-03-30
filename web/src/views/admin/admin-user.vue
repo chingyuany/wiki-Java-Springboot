@@ -71,7 +71,7 @@
 <!--      因為編輯的時候 不能改密碼 不要顯示-->
 <!--      v-show是動態顯示  v-if 是直接刪掉元素 適用於初始就判斷顯不顯示 -->
       <a-form-item label="Password"  v-show="!user.id" required>
-        <a-input v-model:value="user.password" pattern="^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,20}$"/>
+        <a-input v-model:value="user.password"  type="password"/>
       </a-form-item>
     </a-form>
   </a-modal>
@@ -84,7 +84,7 @@
   >
     <a-form :model="user" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
       <a-form-item label="New Password" required>
-        <a-input v-model:value="user.password" />
+        <a-input v-model:value="user.password"  type="password"/>
       </a-form-item>
     </a-form>
   </a-modal>
