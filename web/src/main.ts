@@ -8,6 +8,7 @@ import "ant-design-vue/dist/antd.css";
 import * as Icons from '@ant-design/icons-vue';
 import axios from "axios";
 import {Tool} from "@/util/tool";
+import { message } from 'ant-design-vue';
 
 //依據.env.dev and env.prod 去配置base url, home.vue 裡面的 axios.get("/ebook/list")會自己接上base URL
 axios.defaults.baseURL = process.env.VUE_APP_SERVER;
@@ -16,19 +17,6 @@ axios.defaults.baseURL = process.env.VUE_APP_SERVER;
 /**
  * 前端的 axios拦截器interceptors
  */
-axios.interceptors.request.use(function (config) {
-    console.log('Request parameter：', config);
-    return config;
-}, error => {
-    return Promise.reject(error);
-});
-axios.interceptors.response.use(function (response) {
-    console.log('Return result：', response);
-    return response;
-}, error => {
-    console.log('Return error：', error);
-    return Promise.reject(error);
-});
 //檢查登入token
 axios.interceptors.request.use(function (config) {
     console.log('Request parameter：', config);
@@ -39,6 +27,24 @@ axios.interceptors.request.use(function (config) {
     }
     return config;
 }, error => {
+    return Promise.reject(error);
+});
+
+axios.interceptors.response.use(function (response) {
+    console.log('Return result：', response);
+    return response;
+}, error => {
+    console.log('Return error：', error);
+    const response = error.response;
+    const status = response.status;
+    if (status === 401) {
+        // LogInterceptor.java HttpStatus.UNAUTHORIZED.value() == 401
+        // 判断状态码是401 跳转到首页或登录页
+        console.log("Not login, reroute to home page");
+        store.commit("setUser", {});
+        message.error("Not login or login over time");
+        router.push('/');
+    }
     return Promise.reject(error);
 });
 

@@ -66,8 +66,8 @@ export default defineComponent({
   setup () {
     //用來登入
     const loginUser = ref({
-      loginName: "test",
-      password: "test1234"
+      loginName: "admin",
+      password: "admin1234"
     });
     //取出登入後保存的訊息  下面要先login commit setUser 這裡才會有值
     const user = computed(() => store.state.user);

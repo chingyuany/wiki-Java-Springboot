@@ -1,6 +1,7 @@
 package com.alanyang.wiki.config;
 
 
+import com.alanyang.wiki.interceptor.ActionInterceptor;
 import com.alanyang.wiki.interceptor.LogInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -14,6 +15,8 @@ public class SpringMvcConfig implements WebMvcConfigurer {
     @Resource
     LogInterceptor loginInterceptor;
 
+    @Resource
+    ActionInterceptor actionInterceptor;
 
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginInterceptor)
@@ -31,11 +34,11 @@ public class SpringMvcConfig implements WebMvcConfigurer {
                         "/doc/find-content/**",
                         "/ebook-snapshot/**"
                 );
-
-//        registry.addInterceptor(actionInterceptor)
-//                .addPathPatterns(
-//                        "/*/save",
-//                        "/*/delete/**",
-//                        "/*/reset-password");
+//禁止存刪改
+        registry.addInterceptor(actionInterceptor)
+                .addPathPatterns(
+                        "/*/save",
+                        "/*/delete/**",
+                        "/*/reset-password");
     }
 }

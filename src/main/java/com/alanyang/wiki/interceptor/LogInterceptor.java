@@ -1,6 +1,9 @@
 
 package com.alanyang.wiki.interceptor;
 
+import com.alanyang.wiki.resp.UserLoginResp;
+import com.alanyang.wiki.util.LoginUserContext;
+import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -60,6 +63,7 @@ private RedisTemplate redisTemplate;
          LOG.info("Login validation start，token：{}", token);
          if (token == null || token.isEmpty()) {
              LOG.info( "token is empty，request has been intercepted" );
+//         error code 401     error msg show at web/src/main.ts
              response.setStatus(HttpStatus.UNAUTHORIZED.value());
              return false;
          }
@@ -70,6 +74,9 @@ private RedisTemplate redisTemplate;
              return false;
          } else {
              LOG.info("Login success：{}", object);
+//             放進去Uuser name, actioninterceptor 會去檢查登入的是不是admin
+//            store.setUser 在redis存的value就是 userLoginResp 現在把她轉成字串,再轉回 userLoginResp object
+             LoginUserContext.setUser(JSON.parseObject((String) object, UserLoginResp.class));
              return true;
          }
      }
