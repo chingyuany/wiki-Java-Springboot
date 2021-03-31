@@ -6,8 +6,8 @@
 <!--    生成0 - 100 的數 round（x,y）是四舍五入到第y位-->
     <update id="genDummy">
         update ebook t1, ebook t2
-        set t1.view_count = t2.view_count + Round(RAND() * 30 + 5, 0),
-            t1.vote_count = t2.vote_count + Round(RAND() * 5, 0)
+        set t1.view_count = t2.view_count + Round(RAND() * 15 + 2, 0),
+            t1.vote_count = t2.vote_count + Round(RAND() * 2, 0)
         where t1.id = t2.id;
     </update>
 

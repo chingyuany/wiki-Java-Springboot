@@ -5,14 +5,17 @@ Accept: application/json
 
 ###get
 
-GET http://localhost:8880/redis/get/DOC_VOTE_6_127.0.0.1
+#GET http://localhost:8880/redis/get/DOC_VOTE_1_127.0.0.1
+GET http://localhost:8880/redis/get/DOC_VOTE_1_61.228.209.35
 Accept: application/json
 
 ###
 
 ###delete
 
-GET http://localhost:8880/redis/delete/DOC_VOTE_1_127.0.0.1
+#GET http://localhost:8880/redis/delete/DOC_VOTE_1_127.0.0.1
+GET http://localhost:8880/redis/delete/DOC_VOTE_1_61.228.209.35
+
 Accept: application/json
 
 ###

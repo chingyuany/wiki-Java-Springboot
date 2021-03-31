@@ -92,7 +92,7 @@ public class LogAspect {
         PropertyPreFilters filters = new PropertyPreFilters();
         PropertyPreFilters.MySimplePropertyPreFilter excludefilter = filters.addFilter();
         excludefilter.addExcludes(excludeProperties);
-        LOG.info("Return result: {}", JSONObject.toJSONString(result, excludefilter));
+//        LOG.info("Return result: {}", JSONObject.toJSONString(result, excludefilter));
         LOG.info("-------------AOP End elapsed time：{} ms -------------", System.currentTimeMillis() - startTime);
         return result;
     }

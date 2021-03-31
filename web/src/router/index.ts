@@ -78,14 +78,14 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   // 要不要对meta.loginRequire属性做监控拦截  item路由的訊息
   if (to.matched.some(function (item) {
-    console.log(item, "是否需要登录校验：", item.meta.loginRequire);
+    console.log(item, "Need login validate?：", item.meta.loginRequire);
     return item.meta.loginRequire
   }))
   //上面是true就執行下面
   {
     const loginUser = store.state.user;
     if (Tool.isEmpty(loginUser)) {
-      console.log("用户未登录！");
+      console.log("User not login！");
       //回到首頁
       next('/');
     } else {

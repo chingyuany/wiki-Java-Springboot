@@ -8,8 +8,10 @@ public class StatisticResp {
 
 
 //    @JsonFormat(pattern="MM-dd", timezone = "GMT+8")
+//     @JsonFormat(pattern="MM-dd", timezone = "EST")
 //    @JsonFormat(pattern="MM-dd", timezone = JsonFormat.DEFAULT_TIMEZONE)
-    @JsonFormat(pattern="MM-dd", timezone = "EST")
+//    GMT-5 = CST
+    @JsonFormat(pattern="MM-dd", timezone = "GMT+8")
     private Date date;
 
     private int viewCount;
