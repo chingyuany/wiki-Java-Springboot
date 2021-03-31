@@ -28,7 +28,7 @@
             </a-col>
             <a-col :span="8">
 <!--              總讚數/總觀看量-->
-              <a-statistic title="Like Rate" :value="statistic.voteCount / statistic.viewCount * 100"
+              <a-statistic title="Like Rate" :value="statistic.voteCount && statistic.viewCount ? statistic.voteCount / statistic.viewCount * 100 : 0"
                            :precision="2"
                            suffix="%"
                            :value-style="{ color: '#cf1322' }">

@@ -7,9 +7,9 @@ import java.util.Date;
 public class StatisticResp {
 
 
-//    @JsonFormat(pattern="MM-dd", timezone = "EST")
+//    @JsonFormat(pattern="MM-dd", timezone = "GMT+8")
 //    @JsonFormat(pattern="MM-dd", timezone = JsonFormat.DEFAULT_TIMEZONE)
-    @JsonFormat(pattern="MM-dd", timezone = "GMT+8")
+    @JsonFormat(pattern="MM-dd", timezone = "EST")
     private Date date;
 
     private int viewCount;
