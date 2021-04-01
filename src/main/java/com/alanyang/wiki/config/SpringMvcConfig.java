@@ -39,6 +39,7 @@ public class SpringMvcConfig implements WebMvcConfigurer {
                 .addPathPatterns(
                         "/*/save",
                         "/*/delete/**",
-                        "/*/reset-password");
+                        "/*/reset-password")
+                .excludePathPatterns("/redis/**");
     }
 }

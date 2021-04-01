@@ -57,13 +57,16 @@ import {computed, defineComponent, ref} from 'vue';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
 import store from "@/store";
+import router from "@/router";
 
 declare let hexMd5: any;
 declare let KEY: any;
 
 export default defineComponent({
   name: 'the-header',
+
   setup () {
+
     //用來登入
     const loginUser = ref({
       loginName: "admin",
@@ -111,6 +114,7 @@ export default defineComponent({
 
           //store/index.ts  全局變量 其他不是header的組件也能用
           store.commit("setUser", {})
+          router.push('/')
         } else {
           message.error(data.message);
         }

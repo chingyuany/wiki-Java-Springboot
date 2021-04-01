@@ -64,4 +64,17 @@ public class TestController {
         LOG.info("key: {}, value: {}", key, object);
         return object;
     }
+    @RequestMapping("/redis/delete")
+    public Object deleteall() {
+        Object object = Object.class;
+
+        for(int i = 1; i <=6;i++){
+            String key = "DOC_VOTE_"+i+"_61.228.209.35";
+            object = redisTemplate.delete(key);;
+            LOG.info("key: {}, value: {}", key, object);
+        }
+
+
+        return object;
+    }
 }
