@@ -16,11 +16,11 @@
             <!--            <a-input v-model:value="param.name" placeholder="Name">-->
             <!--            </a-input>-->
             <!--          </a-form-item>-->
-            <a-form-item>
-              <a-button type="primary" @click="handleQuery()">
-                Show All
-              </a-button>
-            </a-form-item>
+<!--            <a-form-item>-->
+<!--              <a-button type="primary" @click="handleQuery()">-->
+<!--                Show All-->
+<!--              </a-button>-->
+<!--            </a-form-item>-->
             <a-form-item>
               <a-button type="primary" @click="add()" >
                 New
@@ -82,11 +82,11 @@
             </p>
             <a-form :model="doc" layout="vertical">
 
-              <a-form-item>
+              <a-form-item required>
                 <a-input v-model:value="doc.name" placeholder="Name"/>
               </a-form-item>
 
-            <a-form-item>
+            <a-form-item required>
             <!--          : 後面可以放變量, 沒有冒號 後面就是字串, replace fields 是把原本a-tree-select裡面的欄位名稱換成我們自訂的-->
             <a-tree-select
                 v-model:value="doc.parent"
@@ -117,8 +117,8 @@
 <!--                </a-select-option>-->
 <!--              </a-select>-->
 <!--            </a-form-item>-->
-            <a-form-item >
-              <a-input v-model:value="doc.sort" placeholder="order"/>
+            <a-form-item required>
+              <a-input v-model:value="doc.sort" placeholder="sort (Integer)" type="number"/>
             </a-form-item>
 
               <a-form-item>
@@ -136,7 +136,7 @@
 
         </a-col>
       </a-row>
-
+<!--preview content-->
       <a-drawer width="900" placement="right" :closable="false" :visible="drawerVisible" @close="onDrawerClose">
         <div class="wangeditor" :innerHTML="previewHtml"></div>
       </a-drawer>
@@ -162,6 +162,7 @@ import {useRoute} from "vue-router";
 import ExclamationCircleOutlined from "@ant-design/icons-vue/ExclamationCircleOutlined";
 import E from 'wangeditor';
 import i18next from "i18next";
+
 export default defineComponent({
   name: 'AdminDoc',
   setup: function () {
@@ -267,6 +268,12 @@ export default defineComponent({
     //富文本 優先層級原本是500 設成0 才不會擋住其他
     editor.config.zIndex = 0;
     const handleSave = () => {
+      //一定要數字
+      var numReg = /^[0-9]*$/
+      var numRe = new RegExp(numReg)
+      if (!numRe.test(doc.value.sort)){
+        message.error("sort need to be integer");
+      }else{
       modalLoading.value = true
       //wangeditor 官方頁面的方法
       doc.value.content = editor.txt.html();
@@ -285,7 +292,7 @@ export default defineComponent({
           message.error(data.message);
         }
       });
-
+      }
 
     };
 

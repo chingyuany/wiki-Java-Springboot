@@ -59,5 +59,5 @@ for (const i in icons) {
     app.component(i, icons[i]);
 }
 //對應到 .env.dev and .env.prod
-console.log('环境：', process.env.NODE_ENV);
-console.log('服务端：', process.env.VUE_APP_SERVER);
+console.log('environment：', process.env.NODE_ENV);
+console.log('server：', process.env.VUE_APP_SERVER);

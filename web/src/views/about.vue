@@ -2,6 +2,8 @@
   <a-layout>
     <a-layout-content :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }">
       <h1>
+        <p>This website's front-end framework is Vue 3, the back end is Java
+          Spring Boot build on an Nginx web server.The databases are Redis and MySQL.</p>
         <p>My name is Alan Yang. My <a href="https://www.chingyuanyang.com/">personal website</a> has my background.
           I am actively seeking a software engineer permanent full-time job. (Application, Backend and Full-stack).
         </p>
@@ -10,13 +12,16 @@
           Computer Science degree. I am highly skilled and well-versed in the use of Java, Python, PHP, and MySQL, as
           evidenced by the creation of several innovative software development projects.</p>
 
-        <p> I developed some personal projects, such as a video sharing website with PHP, MySQL, jQuery, Apache,
-          Bootstrap, HTML5, CSS3 on the google cloud server.
-          Another image Steganography project can encode and decode messages for the images with the least significant
-          bits and blind hide algorithm in GPU parallel computing with C++, Cuda and OpenCV. Also, a project to
-          simulated the Blockchain and Bitcoin transactions for different users with OpenSSL and elliptic curve public
-          key by Python. In addition, a project to analyze earthquake data to find the closest earthquakes to a location
-          and filter with magnitude, name and dept/h by Java.</p>
+        <p> I developed some personal projects, such as this website - a Knowledge base website that includes E-books,
+          categories, user management and statistics report, the front-end framework is Vue 3, the back end is Java
+          Spring Boot build on an Nginx web server.The databases are Redis and MySQL.
+          Another video sharing website that provides functions for accounts, media organization, social, searching. It
+          was constructed with PHP, MySQL, jQuery, Apache, Bootstrap, HTML5, CSS3 on the Google Cloud server. Also, an
+          image Steganography project can encode and decode messages for the images with the least significant bits and
+          blind hide algorithm in GPU parallel computing with C++, Cuda and OpenCV. In addition, a project to simulated
+          the Blockchain and Bitcoin transactions for different users with OpenSSL and elliptic curve public key by
+          Python. Besides, a project to analyze earthquake data to find the closest earthquakes to a location and filter
+          with magnitude, name and depth by Java.</p>
 
         <p> My experience working as a manufacturing execution system engineer at Foxconn has strengthened my system
           issue

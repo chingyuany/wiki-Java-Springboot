@@ -78,20 +78,20 @@
         @ok="handleModalOk"
       >
      <a-form :model="ebook" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
-       <a-form-item label="Cover">
-         <a-input v-model:value="ebook.cover" />
+       <a-form-item label="Cover" required>
+         <a-input v-model:value="ebook.cover"/>
        </a-form-item>
-       <a-form-item label="Name">
+       <a-form-item label="Name" required>
          <a-input v-model:value="ebook.name" />
        </a-form-item>
-       <a-form-item label="Category">
+       <a-form-item label="Category" required>
          <a-cascader
              v-model:value="categoryIds"
              :field-names="{ label: 'name', value: 'id', children: 'children' }"
              :options="level1"
          />
        </a-form-item>
-       <a-form-item label="Description">
+       <a-form-item label="Description" required>
          <a-input v-model:value="ebook.description" type="textarea" />
        </a-form-item>
      </a-form>
@@ -210,6 +210,7 @@ export default defineComponent({
       modalLoading.value = true
       ebook.value.category1Id = categoryIds.value[0];
       ebook.value.category2Id = categoryIds.value[1];
+
       //post 不需要像get一樣寫param
       axios.post("/ebook/save", ebook.value
       ).then((response) => {
@@ -237,6 +238,7 @@ export default defineComponent({
      * 编辑
      */
     const edit = (record:any) => {
+      ebook.value = {}
       modalVisible.value = true;
       ebook.value = Tool.copy(record);
       categoryIds.value = [ebook.value.category1Id, ebook.value.category2Id]
@@ -245,6 +247,11 @@ export default defineComponent({
     const add = () => {
       modalVisible.value = true;
       ebook.value = {}
+      ebook.value.docCount = 0
+      ebook.value.viewCount = 0
+      ebook.value.voteCount = 0
+      ebook.value.cover = "/image/cover1.png"
+
     };
     //後端long 前端number
     const handleDelete = (id:number) =>{

@@ -14,11 +14,11 @@
 <!--            <a-input v-model:value="param.name" placeholder="Name">-->
 <!--            </a-input>-->
 <!--          </a-form-item>-->
-          <a-form-item>
-            <a-button type="primary" @click="handleQuery()">
-              Show All
-            </a-button>
-          </a-form-item>
+<!--          <a-form-item>-->
+<!--            <a-button type="primary" @click="handleQuery()">-->
+<!--              Show All-->
+<!--            </a-button>-->
+<!--          </a-form-item>-->
           <a-form-item>
           <a-button type="primary" @click="add()" >
             New
@@ -77,10 +77,10 @@
       @ok="handleModalOk"
   >
     <a-form :model="category" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
-      <a-form-item label="Name">
+      <a-form-item label="Name" required>
         <a-input v-model:value="category.name" />
       </a-form-item>
-      <a-form-item label="Parent Category">
+      <a-form-item label="Parent Category" required>
         <a-select
             v-model:value="category.parent"
             ref="select"
@@ -95,8 +95,8 @@
           </a-select-option>
         </a-select>
       </a-form-item>
-      <a-form-item label="Sort">
-        <a-input v-model:value="category.sort" />
+      <a-form-item label="Sort" required>
+        <a-input v-model:value="category.sort" type="number"/>
       </a-form-item>
     </a-form>
   </a-modal>
@@ -129,7 +129,7 @@ export default defineComponent({
       //   dataIndex: 'parent'
       // },
       {
-        title: 'Sort',
+        title: 'sort',
         dataIndex: 'sort'
       },
       {
@@ -185,28 +185,35 @@ export default defineComponent({
 
 
     // -------- Edit 表单 ---------
-    const category = ref({});
+    const category = ref();
+    category.value = []
     const modalVisible = ref(false);
     const modalLoading = ref(false);
     const handleModalOk = () => {
-      modalLoading.value = true
-      //post 不需要像get一樣寫param
-      axios.post("/category/save", category.value
-      ).then((response) => {
-        modalLoading.value = false;
+      //一定要數字
+      var numReg = /^[0-9]*$/
+      var numRe = new RegExp(numReg)
+      if (!numRe.test(category.value.sort)){
+        message.error("sort need to be integer");
+      }else {
+        modalLoading.value = true
+        //post 不需要像get一樣寫param
+        axios.post("/category/save", category.value
+        ).then((response) => {
+          modalLoading.value = false;
           //response 是後端傳回來的值
-        const data = response.data;
-        if (data.success){
-          modalVisible.value = false;
+          const data = response.data;
+          if (data.success) {
+            modalVisible.value = false;
 
-          //reload form
-          handleQuery();
-        }else{
-          message.error(data.message);
-        }
-      });
+            //reload form
+            handleQuery();
+          } else {
+            message.error(data.message);
+          }
+        });
 
-
+      }
     };
 
     /**

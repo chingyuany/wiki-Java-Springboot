@@ -13,6 +13,27 @@ public class DocQueryResp {
 
     private Integer viewCount;
 
+    @Override
+    public String toString() {
+        return "DocQueryResp{" +
+                "id=" + id +
+                ", ebookId=" + ebookId +
+                ", parent=" + parent +
+                ", name='" + name + '\'' +
+                ", sort=" + sort +
+                ", viewCount=" + viewCount +
+                ", voteCount=" + voteCount +
+                '}';
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
+    }
+
     private Integer voteCount;
 
     public Long getId() {
@@ -47,14 +68,6 @@ public class DocQueryResp {
         this.name = name;
     }
 
-    public Integer getSort() {
-        return sort;
-    }
-
-    public void setSort(Integer sort) {
-        this.sort = sort;
-    }
-
     public Integer getViewCount() {
         return viewCount;
     }
@@ -71,20 +84,4 @@ public class DocQueryResp {
         this.voteCount = voteCount;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", ebookId=").append(ebookId);
-        sb.append(", parent=").append(parent);
-        sb.append(", name=").append(name);
-        sb.append(", sort=").append(sort);
-        sb.append(", viewCount=").append(viewCount);
-        sb.append(", voteCount=").append(voteCount);
-        sb.append("]");
-        return sb.toString();
-    }
 }
