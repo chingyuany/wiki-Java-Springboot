@@ -25,8 +25,8 @@ public class DummyEbookDailyJob {
      * 自定义cron表达式跑批
      * 只有等上一次执行完成，下一次才会在下一个时间点执行，错过就错过
      */
-//從第一天開始每天的一小時05分跑一次
-    @Scheduled(cron = "0 5 0/1 1/1 * ?")
+//從第一天開始每天的每三小時05分跑一次
+    @Scheduled(cron = "0 5 0/3 1/1 * ? ")
     public void doDummy() {
         // 增加日志流水号
         MDC.put("LOG_ID", String.valueOf(snowFlake.nextId()));

@@ -5,13 +5,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
 
 public class StatisticResp {
-
-
-//    @JsonFormat(pattern="MM-dd", timezone = "GMT+8")
-//     @JsonFormat(pattern="MM-dd", timezone = "EST")
 //    @JsonFormat(pattern="MM-dd", timezone = JsonFormat.DEFAULT_TIMEZONE)
-//    GMT-5 = CST
-    @JsonFormat(pattern="MM-dd", timezone = "GMT+8")
+//    GMT-5 = CST 有夏令時間的問題 地區最好  taiwan:GMT+8
+    @JsonFormat(pattern="MM-dd", timezone = "America/New_York")
     private Date date;
 
     private int viewCount;

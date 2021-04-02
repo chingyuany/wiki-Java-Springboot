@@ -85,7 +85,7 @@ public class UserController {
         UserLoginResp userLoginResp = userService.login(req);
 
         Long token = snowFlake.nextId();
-        LOG.info("生成單點登入token: {} 放入redis",token);
+        LOG.info("Generate single login token: {} put to redis",token);
 
         userLoginResp.setToken(token.toString());
 //        ops = operation  set 插入一個set(key,value,有效期限,時間單位)
@@ -98,7 +98,7 @@ public class UserController {
     public CommonResp logout(@PathVariable String token){
         CommonResp resp = new CommonResp<>();
         redisTemplate.delete(token);
-        LOG.info("從redis刪除token: {} 放入redis",token);
+        LOG.info("from redis delete token: {} ",token);
 
         return resp;
     }
