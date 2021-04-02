@@ -9,6 +9,9 @@ echo "RocketMQ starting----------"
 #if [ $process_id ] ; then
 #sudo kill -9 $process_id
 #fi
+export JAVA_HOME='/usr/lib/jvm/jdk1.8.0_281/'
+export PATH=$JAVA_HOME/bin:$PATH
+export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
 
 #source /etc/profile
 #nohup 背景執行  2>&1 將標準出錯重定向到標準輸出，這裡的標準輸出已經重定向到了dev/null，即將標準出錯也輸出到dev/null中。最後一個&  是讓該命令在後臺執行。
