@@ -1,8 +1,8 @@
 <template>
   <a-layout>
     <a-layout-content :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }">
-      <h3 v-if="level1.length === 0">Sorry, we cannot find document record！</h3>
-      <a-row>
+      <h1 id="noDoc" v-if="level1.length === 0">There is no document associated with this Ebook！</h1>
+      <a-row v-if="level1.length != 0">
         <a-col :span="6">
           <a-tree
               v-if="level1.length > 0"
@@ -131,6 +131,10 @@ export default defineComponent({
 });
 </script>
 <style>
+#noDoc{
+  text-align: center;
+  font-size: 26px;
+}
 /* wangeditor默认样式, 参照: http://www.wangeditor.com/doc/pages/02-%E5%86%85%E5%AE%B9%E5%A4%84%E7%90%86/03-%E8%8E%B7%E5%8F%96html.html */
 /* 只影響 div class wangeditor 样式 */
 .wangeditor table {
