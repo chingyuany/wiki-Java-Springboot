@@ -64,12 +64,12 @@ public class TestController {
         LOG.info("key: {}, value: {}", key, object);
         return object;
     }
-    @RequestMapping("/redis/delete")
-    public Object deleteall() {
+    @RequestMapping("/redis/deleteall/{ip}")
+    public Object deleteall(@PathVariable String ip) {
         Object object = Object.class;
 
         for(int i = 1; i <=6;i++){
-            String key = "DOC_VOTE_"+i+"_61.228.209.35";
+            String key = "DOC_VOTE_"+i+"_"+ip;
             object = redisTemplate.delete(key);;
             LOG.info("key: {}, value: {}", key, object);
         }
